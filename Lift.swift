@@ -8,15 +8,26 @@
 
 import Foundation
 
-class Lift {
+class Lift : NSObject {
     
-    var number : Int                // Unique ID for the lift
-    let maxWeight :  Int = 800      // Maximum Weight capacity iof the lift n Kilo Grams
-    var currentWeight :  Int = 0    // Current Sum total weight of the people in the lift
-    var currentState :  LiftState = LiftState.Stationary // Current State of the lift
-    var currentFloor : Int = 0       // Floor at which lift is at stationary
-    var pressedButtons : NSMutableArray = NSMutableArray()  // All the pressed buttons in the lift
     
+    let maxWeight :  Int = 800          // Maximum Weight capacity of the lift in Kilo Grams
+    var currentWeight :  Int = 0        // Current total weight of the people in the lift
+    var currentState : LiftState = LiftState.Stationary // Current State of the lift
+    var currentFloor : Int = 0          // Floor at which lift is at stationary
+    var pressedButtons = NSMutableArray()  // All the pressed buttons in the lift
+   
+    var number : Int {
+        didSet(oldID) {
+            if alreadyExistingID(number) {
+                number = oldID
+            } else {
+                
+                MainController.totalLifts.replaceObjectAtIndex(MainController.totalLifts.indexOfObject(oldID), withObject: number)
+            }
+        }
+    }
+
     
     init(LiftNumber number :  Int) {
         self.number = number
@@ -36,5 +47,28 @@ class Lift {
     
     func callLift() {
         
+    }
+    
+    func openDoor() {
+        
+    }
+    
+    func closeDoor() {
+        
+    }
+    
+    
+    
+    func alreadyExistingID(newID : Int) -> Bool{
+    
+        if !(MainController.totalLifts.count == 0) {
+            for liftNumber in MainController.totalLifts {
+                if (newID == liftNumber as! Int) {
+                    println("This ID Already exists ! Value set to previous ID")
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

@@ -13,5 +13,5 @@ enum LiftState {
     case GoingUp
     case GoingDown
     case Stationary
-    case inRepair
+    case notWorking
 }
