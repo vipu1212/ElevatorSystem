@@ -8,23 +8,36 @@
 
 import UIKit
 
-class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate {
+class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate, LiftCallProtocol {
 
+    
+    @IBOutlet weak var lblLeftCurrentFloor: UILabel!
+    
+    @IBOutlet weak var lblRightCurrentFloor: UILabel!
+    
+    @IBOutlet weak var editLeftStopQueue: UITextView!
+    
+    @IBOutlet weak var editRightStopQueue: UITextView!
+    
     static var totalLifts : NSMutableArray = NSMutableArray(array: [])
     
     var leftLift = Lift(LiftNumber: 1)
     var rightLift = Lift(LiftNumber: 2)
     
+    var liftCallSystem = LiftCallSystem()
+    
     override func viewDidAppear(animated: Bool) {
         
         MainController.totalLifts.addObjectsFromArray([leftLift.number, rightLift.number])
-        
+        liftCallSystem.delegate = self
+        liftCallSystem.leftLift = leftLift
+        liftCallSystem.rightLift = rightLift
     }
 
     
     
     
-    // Table View Methods
+    // MARK:- Table View Methods
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -37,13 +50,15 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
+        cell.delegate = liftCallSystem
         cell.fillCellData(ForFloor: indexPath.row)
+        
         return cell
     }
     
     
     
-    // Collection View Methods
+    // MARK:- Collection View Methods
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
@@ -57,6 +72,12 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("liftCell", forIndexPath: indexPath) as! LiftCell
         
         return cell
+    }
+    
+    //MARK:- Lift Protocol Methods
+    
+    func addToRequestQueueForLift(lift: Int) {
+        
     }
 }
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A8C0ECDC1BC8DCD7008F1E30 /* FloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */; };
 		A8C0ECDE1BC8E1B8008F1E30 /* LiftCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */; };
+		A8C0ECE01BCA7272008F1E30 /* LiftCallSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDF1BCA7272008F1E30 /* LiftCallSystem.swift */; };
 		A980B98D1BC8030900345717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A980B98C1BC8030900345717 /* AppDelegate.swift */; };
 		A980B98F1BC8030900345717 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A980B98E1BC8030900345717 /* MainController.swift */; };
 		A980B9921BC8030900345717 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A980B9901BC8030900345717 /* Main.storyboard */; };
@@ -30,12 +31,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloorCell.swift; sourceTree = "<group>"; };
-		A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiftCell.swift; sourceTree = "<group>"; };
+		A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorCell.swift; path = ElevatorSystem/FloorCell.swift; sourceTree = "<group>"; };
+		A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiftCell.swift; path = ElevatorSystem/LiftCell.swift; sourceTree = "<group>"; };
+		A8C0ECDF1BCA7272008F1E30 /* LiftCallSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiftCallSystem.swift; path = ElevatorSystem/LiftCallSystem.swift; sourceTree = "<group>"; };
 		A980B9871BC8030900345717 /* ElevatorSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElevatorSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A980B98B1BC8030900345717 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A980B98C1BC8030900345717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A980B98E1BC8030900345717 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		A980B98E1BC8030900345717 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainController.swift; path = ElevatorSystem/MainController.swift; sourceTree = "<group>"; };
 		A980B9911BC8030900345717 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A980B9931BC8030900345717 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A980B9961BC8030900345717 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -64,9 +66,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A8C0ECE21BCA7E9B008F1E30 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A8C0ECE41BCA7ED9008F1E30 /* SystemController */,
+				A8C0ECE31BCA7ECA008F1E30 /* ViewController */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		A8C0ECE31BCA7ECA008F1E30 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				A980B98E1BC8030900345717 /* MainController.swift */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		A8C0ECE41BCA7ED9008F1E30 /* SystemController */ = {
+			isa = PBXGroup;
+			children = (
+				A8C0ECDF1BCA7272008F1E30 /* LiftCallSystem.swift */,
+			);
+			name = SystemController;
+			sourceTree = "<group>";
+		};
+		A8C0ECE51BCA7EEF008F1E30 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */,
+				A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
 		A980B97E1BC8030900345717 = {
 			isa = PBXGroup;
 			children = (
+				A8C0ECE51BCA7EEF008F1E30 /* CustomCells */,
+				A8C0ECE21BCA7E9B008F1E30 /* Controller */,
 				A980B9AC1BC803C400345717 /* Model */,
 				A980B9891BC8030900345717 /* ElevatorSystem */,
 				A980B99F1BC8030900345717 /* ElevatorSystemTests */,
@@ -86,10 +124,7 @@
 		A980B9891BC8030900345717 /* ElevatorSystem */ = {
 			isa = PBXGroup;
 			children = (
-				A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */,
-				A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */,
 				A980B98C1BC8030900345717 /* AppDelegate.swift */,
-				A980B98E1BC8030900345717 /* MainController.swift */,
 				A980B9901BC8030900345717 /* Main.storyboard */,
 				A980B9931BC8030900345717 /* Images.xcassets */,
 				A980B9951BC8030900345717 /* LaunchScreen.xib */,
@@ -234,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8C0ECDC1BC8DCD7008F1E30 /* FloorCell.swift in Sources */,
+				A8C0ECE01BCA7272008F1E30 /* LiftCallSystem.swift in Sources */,
 				A980B9AE1BC803E000345717 /* Lift.swift in Sources */,
 				A8C0ECDE1BC8E1B8008F1E30 /* LiftCell.swift in Sources */,
 				A980B98F1BC8030900345717 /* MainController.swift in Sources */,
