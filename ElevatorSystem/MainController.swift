@@ -24,14 +24,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var leftLift = Lift(LiftNumber: 1)
     var rightLift = Lift(LiftNumber: 2)
     
-    var liftCallSystem = LiftCallSystem()
-    
     override func viewDidAppear(animated: Bool) {
         
-        MainController.totalLifts.addObjectsFromArray([leftLift.number, rightLift.number])
-        liftCallSystem.delegate = self
-        liftCallSystem.leftLift = leftLift
-        liftCallSystem.rightLift = rightLift
+        MainController.totalLifts.addObjectsFromArray([leftLift, rightLift])
+        
     }
 
     
@@ -50,7 +46,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
-        cell.delegate = liftCallSystem
         cell.fillCellData(ForFloor: indexPath.row)
         
         return cell
@@ -61,11 +56,11 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // MARK:- Collection View Methods
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
+         return 1
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+         return 2
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -77,7 +72,12 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK:- Lift Protocol Methods
     
     func addToRequestQueueForLift(lift: Lift) {
-        
+        if lift == leftLift {
+            println("---> Left <----")
+        }
+        else {
+            println("----> Right <----")
+        }
     }
 }
 

@@ -45,9 +45,16 @@ class FloorCell: UITableViewCell {
     
     
     @IBAction func onButtonPressed(sender: UIButton) {
-        (sender as UIButton).backgroundColor = UIColor.greenColor()
         
-            delegate?.buttonPressed(AtFloor: (10-sender.tag), Direction: sender.restorationIdentifier!)
-
+        if sender.backgroundColor != UIColor.greenColor() {
+            
+        (sender as UIButton).backgroundColor = UIColor.greenColor()
+        let request = LiftRequest()
+        self.delegate = request
+        request.delegate = MainController()
+        request.leftLift = MainController.totalLifts.objectAtIndex(0) as? Lift
+        request.rightLift = MainController.totalLifts.objectAtIndex(1) as? Lift
+        delegate?.buttonPressed(AtFloor: (10-sender.tag), Direction: sender.restorationIdentifier!)
+        }
     }
  }

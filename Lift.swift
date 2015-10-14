@@ -59,7 +59,7 @@ class Lift : NSObject {
         
     }
     
-    func isBelow(floor :  LiftCallSystem) ->  Bool?{
+    func isBelow(floor :  LiftRequest) ->  Bool?{
         
         if (floor.currentFloor > self.currentFloor) {
             return true

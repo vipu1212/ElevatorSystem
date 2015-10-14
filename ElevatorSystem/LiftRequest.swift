@@ -12,19 +12,21 @@ protocol LiftCallProtocol {
     func addToRequestQueueForLift(lift : Lift)
 }
 
-class LiftCallSystem : LiftButtonProtocol {
+class LiftRequest : LiftButtonProtocol {
     
-    
+    var leftPriority :  Int = 0
+    var rightPriority : Int = 0
     var currentFloor : Int?
-    private var buttonsPressedOnAllFloors : NSMutableArray = NSMutableArray()
+    static var buttonsPressedOnAllFloors : NSMutableArray = NSMutableArray()
     var leftLift : Lift?
     var rightLift : Lift?
     var delegate : LiftCallProtocol?
     var direction : LiftState?
     
     func buttonPressed(AtFloor floor: Int, Direction: String) {
+        
         currentFloor = floor
-        buttonsPressedOnAllFloors.addObject(currentFloor!)
+        LiftRequest.buttonsPressedOnAllFloors.addObject(currentFloor!)
         if Direction == "up" {
             direction = LiftState.GoingUp  // Direction of the request
         }
@@ -33,106 +35,100 @@ class LiftCallSystem : LiftButtonProtocol {
         }
         
         prioritizeCall()
+        
     }
     
     func prioritizeCall () {
     
         
         // CHECK  ANY  STATIONARY  LIFT
-        if let stationaryLift = anyLiftStationary() {
-            stationaryLift.priority += 1
-        } else {
-                                    // in case both lifts are moving
-        }
-        
+        anyLiftStationary()
         
         // CHECK  NEAREST  LIFT
-        if let nearestLift = nearestLift() {
-            nearestLift.priority += 1
-        }
-        else {
-                                    // In case of same difference
-        }
+         nearestLift()
         
         // CHECK DIRECTION  OF  THE  LIFT
-        checkLiftSuitableOnDirection().priority += 1
+        checkLiftSuitableOnDirection()
         
         // CHECK  REQUEST  QUEUE  OF  LIFT
-        checkLeastRequestQeueu()?.priority += 1
+        checkLeastRequestQeueu()
         
         addRequestInLift()
     }
     
-    func anyLiftStationary() -> Lift? {
+    func anyLiftStationary()  {
         
         if leftLift?.currentState == LiftState.Stationary {
-            return leftLift
-        } else if rightLift?.currentState == LiftState.Stationary {
-            return rightLift
+           leftPriority += 1
         }
-        return nil
+        if rightLift?.currentState == LiftState.Stationary {
+            rightPriority += 1
+        }
     }
     
-    func nearestLift() -> Lift? {
+    func nearestLift()  {
         
         let leftLiftDifference = abs(leftLift!.currentFloor - currentFloor!)
         let rightLiftDifference = abs(rightLift!.currentFloor - currentFloor!)
         
         if leftLiftDifference < rightLiftDifference {
-            return leftLift!
+           leftPriority += 1
         } else if leftLiftDifference > rightLiftDifference {
-            return rightLift!
+            rightPriority += 1
         }
-        return nil
     }
 
     
-    func checkLiftSuitableOnDirection() ->  Lift {
+    func checkLiftSuitableOnDirection()  {
         
-       if leftLift!.currentState  == LiftState.Stationary && rightLift!.currentState == rightLift!.currentState  {
-            return nearestLift()!
+       if leftLift!.currentState  == LiftState.Stationary && rightLift!.currentState == LiftState.Stationary
+       {
+         nearestLift()
+        if leftPriority == rightPriority {
+           randomLift()
         }
+       }
         if let leftLiftBelow = leftLift!.isBelow(self),
                 rightLiftBelow = rightLift!.isBelow(self)
         {
             if leftLiftBelow && leftLift!.currentState == LiftState.GoingUp && direction == LiftState.GoingUp {
-                return leftLift!
+                leftPriority += 1
             } else if rightLiftBelow && rightLift?.currentState == LiftState.GoingUp && direction == LiftState.GoingUp {
-                return rightLift!
+                rightPriority += 1
             }
             
             else if !leftLiftBelow && leftLift?.currentState == LiftState.GoingDown && direction == LiftState.GoingDown {
-                return leftLift!
+                leftPriority += 1
             } else if !rightLiftBelow && rightLift?.currentState == LiftState.GoingDown && direction == LiftState.GoingDown {
-                return rightLift!
+                rightPriority += 1
             }
         }
         else if direction == leftLift?.currentState {
-            return leftLift!
+            leftPriority += 1
         } else {
-            return rightLift!
+            rightPriority += 1
         }
-        return randomLift()
     }
     
     
-    func checkLeastRequestQeueu() -> Lift? {
+    func checkLeastRequestQeueu()  {
         if leftLift?.pressedButtons.count < rightLift?.pressedButtons.count {
-            return leftLift
+            leftPriority += 1
         } else if rightLift?.pressedButtons.count < leftLift?.pressedButtons.count {
-            return rightLift
+           rightPriority += 1
         }
-        return nil
     }
     
     func addRequestInLift() {
-        if leftLift?.priority > rightLift?.priority {
+                
+        if leftPriority > rightPriority {
             delegate?.addToRequestQueueForLift(leftLift!)
         }
-        else if rightLift?.priority > leftLift?.priority {
+        else if rightPriority > leftPriority {
             delegate?.addToRequestQueueForLift(rightLift!)
         }
             else {
+            /*
                 if let leastQueueLift = checkLeastRequestQeueu() {
                     delegate?.addToRequestQueueForLift(leastQueueLift)
                 } else {
@@ -141,17 +137,21 @@ class LiftCallSystem : LiftButtonProtocol {
                     } else {
                         delegate?.addToRequestQueueForLift(checkLiftSuitableOnDirection())
                    }
-                }
+                }*/
+            randomLift()
+            addRequestInLift()
+            
              }
           }
     
     
-    func randomLift() -> Lift {
-        let randomNumber = arc4random_uniform(2)
-        if randomNumber == 0 {
-            return leftLift!
+    func randomLift() {
+        let randomNumber = arc4random_uniform(20)
+    
+        if randomNumber%2 == 0 {
+            leftPriority += 1
         }
-        return rightLift!
+        rightPriority += 1
      }
     
 }
