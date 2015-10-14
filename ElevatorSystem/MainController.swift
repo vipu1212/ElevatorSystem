@@ -76,7 +76,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK:- Lift Protocol Methods
     
-    func addToRequestQueueForLift(lift: Int) {
+    func addToRequestQueueForLift(lift: Lift) {
         
     }
 }

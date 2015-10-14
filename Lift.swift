@@ -16,7 +16,9 @@ class Lift : NSObject {
     var currentState : LiftState = LiftState.Stationary // Current State of the lift
     var currentFloor : Int = 0          // Floor at which lift is at stationary
     var pressedButtons = NSMutableArray()  // All the pressed buttons in the lift
-   
+    var priority :  Int = 0
+    
+    
     var number : Int {
         didSet(oldID) {
             if alreadyExistingID(number) {
@@ -57,7 +59,15 @@ class Lift : NSObject {
         
     }
     
-    
+    func isBelow(floor :  LiftCallSystem) ->  Bool?{
+        
+        if (floor.currentFloor > self.currentFloor) {
+            return true
+        } else if (floor.currentFloor < self.currentFloor) {
+            return false
+        }
+        return nil
+    }
     
     func alreadyExistingID(newID : Int) -> Bool{
     
