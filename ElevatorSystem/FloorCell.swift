@@ -23,9 +23,11 @@ class FloorCell: UITableViewCell {
     
     var delegate : LiftButtonProtocol?
     
-    func fillCellData(ForFloor floor : Int) {
+    func fillCellData(var ForFloor floor : Int) {
         
-        if floor == 10
+        floor = 10 - floor
+        
+        if floor == 0
         {
             lblFloorNumber.text = "Ground Floor"
             btnDown.hidden = true
@@ -33,14 +35,40 @@ class FloorCell: UITableViewCell {
         }
         else
         {
-            if floor == 0
+            if floor == 10
             {
             btnUp.hidden = true
+            } else {
+                btnUp.hidden = false
+                btnDown.hidden = false
+            }
+            lblFloorNumber.text = "Floor \(floor)"
         }
-            lblFloorNumber.text = "Floor \(10-floor)"
-        }
+        
+        checkAlreadyPressedButtons(floor)
+        
         btnUp.tag = floor
         btnDown.tag = floor
+    }
+    
+    func checkAlreadyPressedButtons(floor : Int) {
+        
+        for button in LiftRequest.upPressedOnAllFloors {
+            if button as! Int == floor {
+                
+                btnUp.backgroundColor = UIColor.greenColor()
+            } else {
+                btnUp.backgroundColor = UIColor.yellowColor()
+            }
+        }
+        
+        for button in LiftRequest.downPressedOnAllFloors {
+            if (button as! Int) == floor {
+                btnDown.backgroundColor = UIColor.greenColor()
+            } else {
+                btnDown.backgroundColor = UIColor.yellowColor()
+            }
+        }
     }
     
     
@@ -49,12 +77,17 @@ class FloorCell: UITableViewCell {
         if sender.backgroundColor != UIColor.greenColor() {
             
         (sender as UIButton).backgroundColor = UIColor.greenColor()
+            
         let request = LiftRequest()
+            
         self.delegate = request
-        request.delegate = MainController()
+            
+        let mainController =  (UIApplication.sharedApplication().delegate as! AppDelegate).window!.rootViewController
+            
+        request.delegate = mainController as! MainController
         request.leftLift = MainController.totalLifts.objectAtIndex(0) as? Lift
         request.rightLift = MainController.totalLifts.objectAtIndex(1) as? Lift
-        delegate?.buttonPressed(AtFloor: (10-sender.tag), Direction: sender.restorationIdentifier!)
+        delegate?.buttonPressed(AtFloor: (sender.tag), Direction: sender.restorationIdentifier!)
         }
     }
  }

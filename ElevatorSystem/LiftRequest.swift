@@ -9,7 +9,7 @@
 import Foundation
 
 protocol LiftCallProtocol {
-    func addToRequestQueueForLift(lift : Lift)
+    func addToRequestQueueForLift(lift: Lift, floor : LiftRequest)
 }
 
 class LiftRequest : LiftButtonProtocol {
@@ -17,20 +17,25 @@ class LiftRequest : LiftButtonProtocol {
     var leftPriority :  Int = 0
     var rightPriority : Int = 0
     var currentFloor : Int?
-    static var buttonsPressedOnAllFloors : NSMutableArray = NSMutableArray()
+    static var upPressedOnAllFloors : NSMutableArray = NSMutableArray()
+    static var downPressedOnAllFloors : NSMutableArray = NSMutableArray()
     var leftLift : Lift?
     var rightLift : Lift?
     var delegate : LiftCallProtocol?
     var direction : LiftState?
     
+    
+    
     func buttonPressed(AtFloor floor: Int, Direction: String) {
         
         currentFloor = floor
-        LiftRequest.buttonsPressedOnAllFloors.addObject(currentFloor!)
+        
         if Direction == "up" {
+            LiftRequest.upPressedOnAllFloors.addObject(currentFloor!)
             direction = LiftState.GoingUp  // Direction of the request
         }
         else {
+            LiftRequest.downPressedOnAllFloors.addObject(currentFloor!)
             direction = LiftState.GoingDown
         }
         
@@ -45,7 +50,7 @@ class LiftRequest : LiftButtonProtocol {
         anyLiftStationary()
         
         // CHECK  NEAREST  LIFT
-         nearestLift()
+        nearestLift()
         
         // CHECK DIRECTION  OF  THE  LIFT
         checkLiftSuitableOnDirection()
@@ -122,10 +127,10 @@ class LiftRequest : LiftButtonProtocol {
     func addRequestInLift() {
                 
         if leftPriority > rightPriority {
-            delegate?.addToRequestQueueForLift(leftLift!)
+            delegate?.addToRequestQueueForLift(leftLift!, floor: self)
         }
         else if rightPriority > leftPriority {
-            delegate?.addToRequestQueueForLift(rightLift!)
+            delegate?.addToRequestQueueForLift(rightLift!, floor: self)
         }
             else {
             /*

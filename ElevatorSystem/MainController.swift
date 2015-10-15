@@ -15,9 +15,13 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBOutlet weak var lblRightCurrentFloor: UILabel!
     
-    @IBOutlet weak var editLeftStopQueue: UITextView!
+    @IBOutlet weak var editLeftUpStopQueue: UITextView!
     
-    @IBOutlet weak var editRightStopQueue: UITextView!
+    @IBOutlet weak var editRightUpStopQueue: UITextView!
+    
+    @IBOutlet weak var editRightDownStopQueue: UITextView!
+    
+    @IBOutlet weak var editLeftDownStopQueue: UITextView!
     
     static var totalLifts : NSMutableArray = NSMutableArray(array: [])
     
@@ -52,7 +56,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-    
     // MARK:- Collection View Methods
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -64,20 +67,37 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("liftCell", forIndexPath: indexPath) as! LiftCell
         
         return cell
     }
     
+    
     //MARK:- Lift Protocol Methods
     
-    func addToRequestQueueForLift(lift: Lift, floor : LiftRequest) {
+    func addToRequestQueueForLift(lift: Lift, floor: LiftRequest) {
+        lift.pressedButtons.addObject(floor.currentFloor!)
+        
         if lift == leftLift {
-            lift.pressedButtons.addObject(floor.currentFloor!)
-            editLeftStopQueue.text = editLeftStopQueue.text + ("\(floor.currentFloor) | ")
+            if floor.direction == LiftState.GoingUp {
+                
+            editLeftUpStopQueue.text = editLeftUpStopQueue.text + ("\(floor.currentFloor!)  ")
+            }
+            else {
+        
+               editLeftDownStopQueue.text = editLeftDownStopQueue.text + ("\(floor.currentFloor!)  ")
+            }
         }
         else {
-            println("----> Right <----")
+            if floor.direction == LiftState.GoingUp {
+                
+                editRightUpStopQueue.text = editRightUpStopQueue.text + ("\(floor.currentFloor!)  ")
+            }
+            else {
+                
+                editRightDownStopQueue.text = editRightDownStopQueue.text + ("\(floor.currentFloor!)  ")
+            }
         }
     }
 }
