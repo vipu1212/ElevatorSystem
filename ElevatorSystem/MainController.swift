@@ -71,9 +71,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK:- Lift Protocol Methods
     
-    func addToRequestQueueForLift(lift: Lift) {
+    func addToRequestQueueForLift(lift: Lift, floor : LiftRequest) {
         if lift == leftLift {
-            println("---> Left <----")
+            lift.pressedButtons.addObject(floor.currentFloor!)
+            editLeftStopQueue.text = editLeftStopQueue.text + ("\(floor.currentFloor) | ")
         }
         else {
             println("----> Right <----")

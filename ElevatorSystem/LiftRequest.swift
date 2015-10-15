@@ -51,7 +51,7 @@ class LiftRequest : LiftButtonProtocol {
         checkLiftSuitableOnDirection()
         
         // CHECK  REQUEST  QUEUE  OF  LIFT
-        checkLeastRequestQeueu()
+        leastRequestQeueu()
         
         addRequestInLift()
     }
@@ -111,7 +111,7 @@ class LiftRequest : LiftButtonProtocol {
     }
     
     
-    func checkLeastRequestQeueu()  {
+    func leastRequestQeueu()  {
         if leftLift?.pressedButtons.count < rightLift?.pressedButtons.count {
             leftPriority += 1
         } else if rightLift?.pressedButtons.count < leftLift?.pressedButtons.count {
