@@ -57,6 +57,7 @@ class FloorCell: UITableViewCell {
             if button as! Int == floor {
                 
                 btnUp.backgroundColor = UIColor.greenColor()
+                break
             } else {
                 btnUp.backgroundColor = UIColor.yellowColor()
             }
@@ -65,6 +66,7 @@ class FloorCell: UITableViewCell {
         for button in LiftRequest.downPressedOnAllFloors {
             if (button as! Int) == floor {
                 btnDown.backgroundColor = UIColor.greenColor()
+                break
             } else {
                 btnDown.backgroundColor = UIColor.yellowColor()
             }
