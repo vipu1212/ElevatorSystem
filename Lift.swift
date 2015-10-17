@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol LiftMovementProtocol {
+    func liftReached(lift: Lift)
+}
+
 class Lift : NSObject {
     
     
@@ -16,8 +20,10 @@ class Lift : NSObject {
     var currentState : LiftState = LiftState.Stationary // Current State of the lift
     var currentFloor : Int = 0          // Floor at which lift is at stationary
     var pressedButtons = NSMutableArray()  // All the pressed buttons in the lift
+    var upPressedButtons = NSMutableArray()
+    var downPressedButtons = NSMutableArray()
     var priority :  Int = 0
-    
+    var delegate : LiftMovementProtocol?
     
     var number : Int {
         didSet(oldID) {
@@ -35,30 +41,30 @@ class Lift : NSObject {
         self.number = number
     }
     
-    func startLift() {
+    func moveLift(direction : LiftState) {
         
+        self.currentState = direction
+        
+        NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: "update", userInfo: nil, repeats: false)
+        
+
     }
     
-    func stopLift() {
+    func update() {
         
-    }
-    
-    func restartLift() {
+        let toFloor = pressedButtons.pop() as! LiftRequest
+
+        if self.currentState == LiftState.GoingUp {
+            upPressedButtons.pop()
+        } else {
+            downPressedButtons.pop()
+        }
         
-    }
-    
-    func callLift() {
+        self.currentFloor = toFloor.currentFloor!
         
+        delegate!.liftReached(self)
     }
-    
-    func openDoor() {
         
-    }
-    
-    func closeDoor() {
-        
-    }
-    
     func isBelow(floor :  LiftRequest) ->  Bool?{
         
         if (floor.currentFloor > self.currentFloor) {

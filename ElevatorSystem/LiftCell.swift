@@ -8,4 +8,15 @@
 
 import UIKit
 
-class LiftCell: UICollectionViewCell {}
+class LiftCell: UICollectionViewCell {
+    
+    @IBOutlet weak var liftImage: UIImageView!
+    
+    func setOpenLiftImage() {
+            liftImage.image = UIImage(named: "openlift")
+    }
+    
+    func setClosedLiftImage() {
+        liftImage.image = UIImage(named: "closedlift")
+    }
+}

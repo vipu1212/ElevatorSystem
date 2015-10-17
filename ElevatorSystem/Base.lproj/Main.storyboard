@@ -48,9 +48,6 @@
                                                                 <subviews>
                                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="closedlift" translatesAutoresizingMaskIntoConstraints="NO" id="CIf-62-8VD">
                                                                         <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                                                        <variation key="widthClass=compact" misplaced="YES">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                                                        </variation>
                                                                     </imageView>
                                                                 </subviews>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -85,6 +82,9 @@
                                                                     <include reference="WWP-e0-rUG"/>
                                                                 </mask>
                                                             </variation>
+                                                            <connections>
+                                                                <outlet property="liftImage" destination="CIf-62-8VD" id="aeb-Bq-n29"/>
+                                                            </connections>
                                                         </collectionViewCell>
                                                     </cells>
                                                     <connections>
@@ -532,6 +532,7 @@
                         <outlet property="editLeftUpStopQueue" destination="lpe-6x-n0b" id="ZhO-sw-Ajm"/>
                         <outlet property="editRightDownStopQueue" destination="EdG-ON-ky5" id="FwU-tp-p3Y"/>
                         <outlet property="editRightUpStopQueue" destination="gc5-K6-oWj" id="ufb-Qy-hqZ"/>
+                        <outlet property="floorTableView" destination="W16-ZD-dIX" id="PFZ-X5-3C2"/>
                         <outlet property="lblLeftCurrentFloor" destination="EVc-6K-AqR" id="TwI-TE-wt2"/>
                         <outlet property="lblRightCurrentFloor" destination="3Nq-Ad-04K" id="B4Z-SY-t2n"/>
                     </connections>

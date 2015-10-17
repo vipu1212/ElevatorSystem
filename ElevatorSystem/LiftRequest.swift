@@ -124,6 +124,7 @@ class LiftRequest : LiftButtonProtocol {
         }
     }
     
+    
     func addRequestInLift() {
                 
         if leftPriority > rightPriority {
@@ -133,21 +134,10 @@ class LiftRequest : LiftButtonProtocol {
             delegate?.addToRequestQueueForLift(rightLift!, floor: self)
         }
             else {
-            /*
-                if let leastQueueLift = checkLeastRequestQeueu() {
-                    delegate?.addToRequestQueueForLift(leastQueueLift)
-                } else {
-                    if let leastDiffLift = nearestLift() {
-                        delegate?.addToRequestQueueForLift(leastDiffLift)
-                    } else {
-                        delegate?.addToRequestQueueForLift(checkLiftSuitableOnDirection())
-                   }
-                }*/
             randomLift()
             addRequestInLift()
-            
-             }
-          }
+        }
+    }
     
     
     func randomLift() {
@@ -158,7 +148,4 @@ class LiftRequest : LiftButtonProtocol {
         }
         rightPriority += 1
      }
-    
 }
-
-

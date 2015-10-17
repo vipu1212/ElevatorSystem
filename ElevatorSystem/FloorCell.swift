@@ -21,6 +21,7 @@ class FloorCell: UITableViewCell {
     @IBOutlet weak var btnDown: UIButton!
     @IBOutlet weak var btnUp: UIButton!
     
+    
     var delegate : LiftButtonProtocol?
     
     func fillCellData(var ForFloor floor : Int) {
@@ -73,6 +74,10 @@ class FloorCell: UITableViewCell {
         }
     }
     
+    
+    func updateLiftImage(lift : Lift) {
+        
+    }
     
     @IBAction func onButtonPressed(sender: UIButton) {
         

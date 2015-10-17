@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate, LiftCallProtocol {
+class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate, LiftCallProtocol, LiftMovementProtocol {
 
     
     @IBOutlet weak var lblLeftCurrentFloor: UILabel!
@@ -23,7 +23,11 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBOutlet weak var editLeftDownStopQueue: UITextView!
     
+    @IBOutlet weak var floorTableView: UITableView!
+    
     static var totalLifts : NSMutableArray = NSMutableArray(array: [])
+    
+    var openLifts : NSMutableArray = NSMutableArray()
     
     var leftLift = Lift(LiftNumber: 1)
     var rightLift = Lift(LiftNumber: 2)
@@ -77,28 +81,98 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK:- Lift Protocol Methods
     
     func addToRequestQueueForLift(lift: Lift, floor: LiftRequest) {
-        lift.pressedButtons.addObject(floor.currentFloor!)
         
-        if lift == leftLift {
-            if floor.direction == LiftState.GoingUp {
-                
-            editLeftUpStopQueue.text = editLeftUpStopQueue.text + ("\(floor.currentFloor!)  ")
-            }
-            else {
+        lift.delegate = self
         
-               editLeftDownStopQueue.text = editLeftDownStopQueue.text + ("\(floor.currentFloor!)  ")
-            }
+        if floor.direction == LiftState.GoingUp {
+            lift.upPressedButtons.addObject(floor)
+        } else {
+            lift.downPressedButtons.addObject(floor)
         }
-        else {
-            if floor.direction == LiftState.GoingUp {
-                
-                editRightUpStopQueue.text = editRightUpStopQueue.text + ("\(floor.currentFloor!)  ")
+        
+        lift.pressedButtons.addObject(floor)
+        
+        appendFloorInTextView(lift, floor: floor)
+        
+        if lift.pressedButtons.count == 1 {
+           lift.moveLift(floor.direction!)
+        }
+    }
+    
+    
+    func liftReached(lift: Lift) {
+        
+        removeFloorFromTextView(lift)
+        
+        var liftCell : LiftCell
+        
+        if openLifts.count < 2 {
+        
+        
+        let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
+        
+        if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
+            
+          liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+        } else {
+            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+        }
+        
+        liftCell.setOpenLiftImage()
+            
+        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
+            
+        }
+    }
+    
+    func moveToNextInQueue(liftCell : LiftCell) {
+        
+     liftCell.setClosedLiftImage()
+    }
+    
+    //MARK:- TextView methods
+    
+    func removeFloorFromTextView(lift : Lift) {
+        if lift.currentState == LiftState.GoingUp {
+            if lift.number == MainController.totalLifts.firstObject as! Lift {
+                editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
+            } else {
+                editRightUpStopQueue.text = lift.upPressedButtons.displayFloor()
             }
-            else {
+        } else {
+            if lift.number == MainController.totalLifts.firstObject as! Lift {
+                editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
+            } else {
                 
-                editRightDownStopQueue.text = editRightDownStopQueue.text + ("\(floor.currentFloor!)  ")
+                editRightDownStopQueue.text = lift.downPressedButtons.displayFloor()
             }
         }
     }
-}
+    
 
+    func appendFloorInTextView(lift: Lift, floor: LiftRequest) {
+        if lift == leftLift {
+            
+            if floor.direction == LiftState.GoingUp {
+                
+                editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
+            }
+            else {
+                
+                editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
+            }
+        }
+        else {
+            
+            if floor.direction == LiftState.GoingUp {
+                
+                editRightUpStopQueue.text = lift.upPressedButtons.displayFloor()
+            }
+            else {
+                
+                editRightDownStopQueue.text = lift.downPressedButtons.displayFloor()
+            }
+        }
+    }
+
+}
