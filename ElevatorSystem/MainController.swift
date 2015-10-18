@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate, LiftCallProtocol, LiftMovementProtocol {
+class MainController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate, LiftCallProtocol, LiftMovementProtocol, LiftFloorSelectProtocol {
 
     
     @IBOutlet weak var lblLeftCurrentFloor: UILabel!
@@ -25,12 +25,16 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBOutlet weak var floorTableView: UITableView!
     
+    var liftCell : LiftCell?
+    var tempLift : Lift?
     static var totalLifts : NSMutableArray = NSMutableArray(array: [])
     
-    var openLifts : NSMutableArray = NSMutableArray()
+    static var openLifts : NSMutableArray = NSMutableArray()
     
     var leftLift = Lift(LiftNumber: 1)
     var rightLift = Lift(LiftNumber: 2)
+    
+    var descriptor: NSSortDescriptor = NSSortDescriptor(key: "currentFloor", ascending: true)
     
     override func viewDidAppear(animated: Bool) {
         
@@ -39,44 +43,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     
-    
-    
-    // MARK:- Table View Methods
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 11
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
-        
-        cell.fillCellData(indexPath.row)
-        
-        return cell
-    }
-    
-    
-    // MARK:- Collection View Methods
-    
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-         return 1
-    }
-    
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         return 2
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("liftCell", forIndexPath: indexPath) as! LiftCell
-        
-        return cell
-    }
     
     
     //MARK:- Lift Protocol Methods
@@ -102,10 +68,15 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func addRequestInArray(lift: Lift, request: FloorRequest) {
+        
         if request.direction == Direction.GoingUp {
             lift.upPressedButtons.addObject(request)
+            
+            lift.upPressedButtons = NSMutableArray(array: lift.upPressedButtons.sortedArrayUsingDescriptors([descriptor]))
         } else {
             lift.downPressedButtons.addObject(request)
+            
+            lift.downPressedButtons = NSMutableArray(array: lift.downPressedButtons.sortedArrayUsingDescriptors([descriptor]))
         }
     }
     
@@ -121,10 +92,11 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
            removeFloorFromTextView(lift, floorRequest: request)
             
-           updateLiftImage(lift)
+           updateLiftImage(lift, request: request)
         }
         
     }
+    
     
     func removeRequestFromArray(lift: Lift, request: FloorRequest) {
         
@@ -146,38 +118,63 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    func updateLiftImage(lift: Lift) {
+    func updateLiftImage(lift: Lift, request: FloorRequest) {
         
         let visibleFloor = NSMutableArray(array: self.floorTableView.indexPathsForVisibleRows()!)
-        
-        if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
-            
-        {
-        var liftCell : LiftCell
-        
+
+        tempLift = lift
+      if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
+      {
         let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
         
-        floorCell.toggleButtonColor(lift.currentState)
+        floorCell.toggleButtonColor(request.direction!)
         
         if lift.number == lift.firstLift.number {
             
-            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
-            
-            
+            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell
+    
         } else {
-            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell
+        }
             
+        liftCell!.setOpenLiftImage()
+        
+        MainController.openLifts.addObject(lift)
+    }
+    }
+    
+    func closeLift(floor: Int?) {
+        
+        
+        
+        if let requestFloor = floor {
+        
+        let direction : Direction
+        
+        if requestFloor < tempLift!.currentFloor {
+            direction = Direction.GoingDown
+        } else if requestFloor > tempLift!.currentFloor {
+            direction = Direction.GoingUp
+        } else {
+            direction = Direction.Stationary
+        }
+        
+        if direction != Direction.Stationary {
+          
+            let request = FloorRequest(floor: requestFloor, direction: direction)
+                
+             addToRequestQueueForLift(tempLift!, request: request)
             
         }
-        liftCell.setOpenLiftImage()
-        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
-    }
-    }
-    
-    
-    func moveToNextInQueue(liftCell : NSTimer) {
+        }
+        moveToNextInQueue()
         
-        (liftCell.userInfo as! LiftCell).setClosedLiftImage()
+    }
+    
+    func moveToNextInQueue() {
+        
+        liftCell!.setClosedLiftImage()
+        MainController.openLifts.removeObject(tempLift!)
     }
     
     //MARK:- TextView methods
@@ -225,5 +222,43 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
     }
+    
+    // MARK:- Table View Methods
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 11
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
+        
+        cell.fillCellData(indexPath.row)
+        
+        return cell
+    }
+    
+    
+    // MARK:- Collection View Methods
+    
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("liftCell", forIndexPath: indexPath) as! LiftCell
+        cell.delegate = self
+        return cell
+    }
+    
 
 }

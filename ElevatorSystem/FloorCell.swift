@@ -9,7 +9,7 @@
 import UIKit
 
 protocol LiftButtonProtocol {
-    func buttonPressed(AtFloor floor : Int, Direction : String)
+    func buttonPressed(ForFloor floor : Int, Direction : String)
 }
 
 
@@ -71,6 +71,32 @@ class FloorCell: UITableViewCell {
                 btnDown.backgroundColor = UIColor.yellowColor()
             }
         }
+        
+        for openLift in MainController.openLifts {
+            
+            var liftCell : LiftCell
+            
+            if (openLift as! Lift).currentFloor == floor {
+            
+                if (openLift as! Lift).number == 0 {
+                
+               liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+            
+                } else {
+                    liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+                }
+                 liftCell.setOpenLiftImage()
+            } else
+            {
+                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+                
+                liftCell.setClosedLiftImage()
+                
+                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+                
+                liftCell.setClosedLiftImage()
+            }
+        }
     }
     
     @IBAction func onButtonPressed(sender: UIButton) {
@@ -88,7 +114,7 @@ class FloorCell: UITableViewCell {
         request.delegate = mainController as! MainController
         request.leftLift = MainController.totalLifts.objectAtIndex(0) as? Lift
         request.rightLift = MainController.totalLifts.objectAtIndex(1) as? Lift
-        delegate?.buttonPressed(AtFloor: (sender.tag), Direction: sender.restorationIdentifier!)
+        delegate?.buttonPressed(ForFloor: (sender.tag), Direction: sender.restorationIdentifier!)
         }
     }
     

@@ -49,6 +49,29 @@
                                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="closedlift" translatesAutoresizingMaskIntoConstraints="NO" id="CIf-62-8VD">
                                                                         <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                                     </imageView>
+                                                                    <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Floor" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6dH-GI-LOf">
+                                                                        <rect key="frame" x="0.0" y="-30" width="97" height="30"/>
+                                                                        <color key="backgroundColor" red="0.5952511627" green="0.95172427400000004" blue="0.75315109800000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="go"/>
+                                                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                                                            <rect key="frame" x="-8" y="45" width="97" height="30"/>
+                                                                        </variation>
+                                                                    </textField>
+                                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFT-4Y-mcK">
+                                                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                                                        <color key="backgroundColor" red="0.60520576130000003" green="0.82922121120000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <state key="normal" title="Go">
+                                                                            <color key="titleColor" red="0.98843962210000003" green="1" blue="0.93883593720000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                                        </state>
+                                                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                                                            <rect key="frame" x="8" y="107" width="64" height="30"/>
+                                                                        </variation>
+                                                                        <connections>
+                                                                            <action selector="onCancel:" destination="2yn-me-K6d" eventType="touchUpInside" id="AQR-9i-MkR"/>
+                                                                        </connections>
+                                                                    </button>
                                                                 </subviews>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
@@ -63,6 +86,8 @@
                                                             <variation key="default">
                                                                 <mask key="subviews">
                                                                     <exclude reference="CIf-62-8VD"/>
+                                                                    <exclude reference="6dH-GI-LOf"/>
+                                                                    <exclude reference="IFT-4Y-mcK"/>
                                                                 </mask>
                                                                 <mask key="constraints">
                                                                     <exclude reference="2E9-d9-68Y"/>
@@ -74,6 +99,8 @@
                                                             <variation key="widthClass=compact">
                                                                 <mask key="subviews">
                                                                     <include reference="CIf-62-8VD"/>
+                                                                    <include reference="6dH-GI-LOf"/>
+                                                                    <include reference="IFT-4Y-mcK"/>
                                                                 </mask>
                                                                 <mask key="constraints">
                                                                     <include reference="2E9-d9-68Y"/>
@@ -83,6 +110,8 @@
                                                                 </mask>
                                                             </variation>
                                                             <connections>
+                                                                <outlet property="cancelButton" destination="IFT-4Y-mcK" id="eXx-6s-Ax8"/>
+                                                                <outlet property="floorInputTextField" destination="6dH-GI-LOf" id="k70-GS-wSL"/>
                                                                 <outlet property="liftImage" destination="CIf-62-8VD" id="aeb-Bq-n29"/>
                                                             </connections>
                                                         </collectionViewCell>
