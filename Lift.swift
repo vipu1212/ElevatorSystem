@@ -9,22 +9,24 @@
 import Foundation
 
 protocol LiftMovementProtocol {
-    func liftReached(lift: Lift)
+    func movedOneFloor(lift: Lift, reachedRequest: Bool, request : FloorRequest)
 }
 
 class Lift : NSObject {
     
     
-    var currentState : LiftState = LiftState.Stationary // Current State of the lift
+    var currentState : Direction = Direction.Stationary // Current State of the lift
     var currentFloor : Int = 0          // Floor at which lift is at stationary
-    var pressedButtons = NSMutableArray()  // All the pressed buttons in the lift
+    var totalRequestCount : Int {
+        return self.upPressedButtons.count + self.downPressedButtons.count
+    }
   
     var upPressedButtons = NSMutableArray()
     var downPressedButtons = NSMutableArray()
    
     var priority :  Int = 0
     var delegate : LiftMovementProtocol?
-    
+
     var number : Int {
         didSet(oldID) {
             if alreadyExistingID(number) {
@@ -48,31 +50,80 @@ class Lift : NSObject {
         self.number = number
     }
     
-    func moveLift(direction : LiftState) {
+    //MARK:- Main Flow Methods
+    
+    func moveLiftForRequest(request : FloorRequest, interruptCall : Bool) {
         
-        self.currentState = direction
+        self.setLiftDirection(request)
         
-        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "update", userInfo: nil, repeats: false)
+       let timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
         
-
+        // Called just the first time before calling moveOn function
+        // To Stop the current timer if interrupt occured
+        
+        if interruptCall {
+            timer.invalidate()
+            
+            ////**** ADDITIONAL METHODS ****/////
+        }
     }
     
-    func update() {
+    
+    func moveOneFloor(request : NSTimer) {
         
-        let toFloor = MainController.totalLifts.pop() as! LiftRequest
-
-        if self.currentState == LiftState.GoingUp {
-            upPressedButtons.pop()
+        if self.currentState == Direction.GoingUp {
+            println("UP")
         } else {
-            downPressedButtons.pop()
+             println("DOWN")
         }
         
-        self.currentFloor = toFloor.currentFloor!
+        let liftCurrentFloor = updatedCurrentFloor()
+        let requestedFloor = (request.userInfo as! FloorRequest).currentFloor
         
-        delegate!.liftReached(self)
+        if liftCurrentFloor == requestedFloor {
+            
+            // Stop Moving Lift Requested Floor Reached
+            delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
+            request.invalidate()
+        } else {
+            
+            // Continue moving lift until Requested Floor reached
+            delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
+        }
+        
     }
+    
+    //MARK:-
+    
+    func setLiftDirection(request : FloorRequest) {
         
-    func isBelow(floor :  LiftRequest) ->  Bool?{
+        if let liftIsBelow = self.isBelow(request) {
+            if liftIsBelow {
+                self.currentState = Direction.GoingUp
+            } else {
+                self.currentState = Direction.GoingDown
+            }
+        } else {
+            
+            /******* SET LIFT OPEN AND CONTINUE FLOW ***********/
+        }
+        
+    }
+
+    
+    func updatedCurrentFloor() -> Int?{
+        
+        if self.currentState == Direction.GoingDown {
+           return --currentFloor
+        } else if self.currentState == Direction.GoingUp {
+           return ++currentFloor
+        } else {
+            print("Error case in movedOneFloor()")
+            return nil
+        }
+    }
+    
+    func isBelow(floor :  FloorRequest) ->  Bool?{
         
         if (floor.currentFloor > self.currentFloor) {
             return true

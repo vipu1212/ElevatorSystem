@@ -54,7 +54,7 @@ class FloorCell: UITableViewCell {
     
     func checkAlreadyPressedButtons(floor : Int) {
         
-        for button in LiftRequest.upPressedOnAllFloors {
+        for button in FloorRequest.upPressedOnAllFloors {
             if button as! Int == floor {
                 btnUp.backgroundColor = UIColor.greenColor()
                 break
@@ -63,7 +63,7 @@ class FloorCell: UITableViewCell {
             }
         }
         
-        for button in LiftRequest.downPressedOnAllFloors {
+        for button in FloorRequest.downPressedOnAllFloors {
             if (button as! Int) == floor {
                 btnDown.backgroundColor = UIColor.greenColor()
                 break
@@ -79,7 +79,7 @@ class FloorCell: UITableViewCell {
             
         (sender as UIButton).backgroundColor = UIColor.greenColor()
             
-        let request = LiftRequest()
+        let request = FloorRequest()
             
         self.delegate = request
             
@@ -92,9 +92,9 @@ class FloorCell: UITableViewCell {
         }
     }
     
-    func toggleButtonColor(direction : LiftState) {
+    func toggleButtonColor(direction : Direction) {
         
-        if direction == LiftState.GoingUp {
+        if direction == Direction.GoingUp {
         btnUp.backgroundColor = UIColor.yellowColor()
         } else {
         btnDown.backgroundColor = UIColor.yellowColor()

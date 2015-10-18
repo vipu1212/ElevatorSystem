@@ -19,7 +19,7 @@ extension NSMutableArray {
     func displayFloor() -> String {
         var floorsString = String()
         for floor in self {
-           floorsString = floorsString + "\((floor as! LiftRequest).currentFloor!) "
+           floorsString = floorsString + "\((floor as! FloorRequest).currentFloor!) "
         }
         return floorsString
     }

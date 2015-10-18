@@ -81,72 +81,99 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK:- Lift Protocol Methods
     
-    func addToRequestQueueForLift(lift: Lift, floor: LiftRequest) {
+    func addToRequestQueueForLift(lift: Lift, request: FloorRequest) {
         
         lift.delegate = self
         
-        if floor.direction == LiftState.GoingUp {
-            lift.upPressedButtons.addObject(floor)
+        addRequestInArray(lift, request: request)
+        
+        appendFloorInTextView(lift, floor: request)
+        
+         // If lift is stationary
+        if lift.currentState == Direction.Stationary {
+            lift.moveLiftForRequest(request, interruptCall: false)
+            
         } else {
-            lift.downPressedButtons.addObject(floor)
-        }
-        
-        lift.pressedButtons.addObject(floor)
-        
-        appendFloorInTextView(lift, floor: floor)
-        
-        if lift.pressedButtons.count == 1 {
-           lift.moveLift(floor.direction!)
+        // If lift is moving
+            
+            lift.moveLiftForRequest(request, interruptCall: true)
         }
     }
     
     
-    func liftReached(lift: Lift) {
+    func addRequestInArray(lift: Lift, request: FloorRequest) {
+        if request.direction == Direction.GoingUp {
+            lift.upPressedButtons.addObject(request)
+        } else {
+            lift.downPressedButtons.addObject(request)
+        }
+    }
+    
+    
+    
+    func movedOneFloor(lift: Lift, reachedRequest: Bool, request: FloorRequest) {
         
-        removeFloorFromTextView(lift)
+        updatedCurrentLiftLabel(lift)
         
-        var liftCell : LiftCell
+        if reachedRequest {
+            
+           removeRequestFromArray(lift, request: request)
+            
+           removeFloorFromTextView(lift, floorRequest: request)
+            
+           updateLiftImage(lift)
+        }
+        
+    }
+    
+    func removeRequestFromArray(lift: Lift, request: FloorRequest) {
+        
+        if request.direction == Direction.GoingUp {
+            lift.upPressedButtons.pop()
+            FloorRequest.upPressedOnAllFloors.pop()
+        } else {
+            lift.downPressedButtons.pop()
+            FloorRequest.downPressedOnAllFloors.pop()
+        }
+    }
+    
+    func updatedCurrentLiftLabel(lift: Lift) {
+        
+        if lift == lift.firstLift {
+            lblLeftCurrentFloor.text = "\(lift.currentFloor)"
+        } else {
+            lblRightCurrentFloor.text = "\(lift.currentFloor)"
+        }
+    }
+    
+    func updateLiftImage(lift: Lift) {
         
         let visibleFloor = NSMutableArray(array: self.floorTableView.indexPathsForVisibleRows()!)
-
-        if lift.number == lift.firstLift.number {
-            self.lblLeftCurrentFloor.text = "\(lift.currentFloor)"
-        } else {
-            self.lblRightCurrentFloor.text = "\(lift.currentFloor)"
-        }
         
-        
-        if lift.currentState == LiftState.GoingUp {
-            LiftRequest.upPressedOnAllFloors.pop()
-            
-        } else {
-            LiftRequest.downPressedOnAllFloors.pop()
-        }
-        
-        if openLifts.count < 2 {
-            
-            
         if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
-            {
+            
+        {
+        var liftCell : LiftCell
+        
         let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
-         
+        
         floorCell.toggleButtonColor(lift.currentState)
-                
+        
         if lift.number == lift.firstLift.number {
             
-          liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
             
-          
+            
         } else {
             liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
             
             
         }
-              liftCell.setOpenLiftImage()
-              NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
-        }
-        }
+        liftCell.setOpenLiftImage()
+        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
     }
+    }
+    
     
     func moveToNextInQueue(liftCell : NSTimer) {
         
@@ -155,15 +182,16 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK:- TextView methods
     
-    func removeFloorFromTextView(lift : Lift) {
-        if lift.currentState == LiftState.GoingUp {
-            if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
+    func removeFloorFromTextView(lift : Lift, floorRequest : FloorRequest) {
+        
+        if floorRequest.direction == Direction.GoingUp {
+            if lift == lift.firstLift {
                 editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
             } else {
                 editRightUpStopQueue.text = lift.upPressedButtons.displayFloor()
             }
         } else {
-            if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
+            if lift.number == lift.firstLift {
                 editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
             } else {
                 
@@ -173,10 +201,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
 
-    func appendFloorInTextView(lift: Lift, floor: LiftRequest) {
+    func appendFloorInTextView(lift: Lift, floor: FloorRequest) {
         if lift == leftLift {
             
-            if floor.direction == LiftState.GoingUp {
+            if floor.direction == Direction.GoingUp {
                 
                 editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
             }
@@ -187,7 +215,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         else {
             
-            if floor.direction == LiftState.GoingUp {
+            if floor.direction == Direction.GoingUp {
                 
                 editRightUpStopQueue.text = lift.upPressedButtons.displayFloor()
             }

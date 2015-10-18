@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		A8C0ECDC1BC8DCD7008F1E30 /* FloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */; };
 		A8C0ECDE1BC8E1B8008F1E30 /* LiftCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */; };
-		A8C0ECE01BCA7272008F1E30 /* LiftRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDF1BCA7272008F1E30 /* LiftRequest.swift */; };
+		A8C0ECE01BCA7272008F1E30 /* FloorRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C0ECDF1BCA7272008F1E30 /* FloorRequest.swift */; };
 		A8D4DA0F1BD2405600A82C43 /* NSMutableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D4DA0E1BD2405600A82C43 /* NSMutableArray.swift */; };
 		A980B98D1BC8030900345717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A980B98C1BC8030900345717 /* AppDelegate.swift */; };
 		A980B98F1BC8030900345717 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A980B98E1BC8030900345717 /* MainController.swift */; };
@@ -34,7 +34,7 @@
 /* Begin PBXFileReference section */
 		A8C0ECDB1BC8DCD7008F1E30 /* FloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorCell.swift; path = ElevatorSystem/FloorCell.swift; sourceTree = "<group>"; };
 		A8C0ECDD1BC8E1B8008F1E30 /* LiftCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiftCell.swift; path = ElevatorSystem/LiftCell.swift; sourceTree = "<group>"; };
-		A8C0ECDF1BCA7272008F1E30 /* LiftRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiftRequest.swift; path = ElevatorSystem/LiftRequest.swift; sourceTree = "<group>"; };
+		A8C0ECDF1BCA7272008F1E30 /* FloorRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorRequest.swift; path = ElevatorSystem/FloorRequest.swift; sourceTree = "<group>"; };
 		A8D4DA0E1BD2405600A82C43 /* NSMutableArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMutableArray.swift; sourceTree = "<group>"; };
 		A980B9871BC8030900345717 /* ElevatorSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElevatorSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A980B98B1BC8030900345717 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		A8C0ECE41BCA7ED9008F1E30 /* SystemController */ = {
 			isa = PBXGroup;
 			children = (
-				A8C0ECDF1BCA7272008F1E30 /* LiftRequest.swift */,
+				A8C0ECDF1BCA7272008F1E30 /* FloorRequest.swift */,
 			);
 			name = SystemController;
 			sourceTree = "<group>";
@@ -281,7 +281,7 @@
 			files = (
 				A8C0ECDC1BC8DCD7008F1E30 /* FloorCell.swift in Sources */,
 				A8D4DA0F1BD2405600A82C43 /* NSMutableArray.swift in Sources */,
-				A8C0ECE01BCA7272008F1E30 /* LiftRequest.swift in Sources */,
+				A8C0ECE01BCA7272008F1E30 /* FloorRequest.swift in Sources */,
 				A980B9AE1BC803E000345717 /* Lift.swift in Sources */,
 				A8C0ECDE1BC8E1B8008F1E30 /* LiftCell.swift in Sources */,
 				A980B98F1BC8030900345717 /* MainController.swift in Sources */,

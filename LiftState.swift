@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum LiftState {
+enum Direction {
     
     case GoingUp
     case GoingDown
