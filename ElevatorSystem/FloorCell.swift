@@ -24,7 +24,7 @@ class FloorCell: UITableViewCell {
     
     var delegate : LiftButtonProtocol?
     
-    func fillCellData(var ForFloor floor : Int) {
+    func fillCellData(var floor : Int) {
         
         floor = 10 - floor
         
@@ -56,7 +56,6 @@ class FloorCell: UITableViewCell {
         
         for button in LiftRequest.upPressedOnAllFloors {
             if button as! Int == floor {
-                
                 btnUp.backgroundColor = UIColor.greenColor()
                 break
             } else {
@@ -72,11 +71,6 @@ class FloorCell: UITableViewCell {
                 btnDown.backgroundColor = UIColor.yellowColor()
             }
         }
-    }
-    
-    
-    func updateLiftImage(lift : Lift) {
-        
     }
     
     @IBAction func onButtonPressed(sender: UIButton) {
@@ -95,6 +89,15 @@ class FloorCell: UITableViewCell {
         request.leftLift = MainController.totalLifts.objectAtIndex(0) as? Lift
         request.rightLift = MainController.totalLifts.objectAtIndex(1) as? Lift
         delegate?.buttonPressed(AtFloor: (sender.tag), Direction: sender.restorationIdentifier!)
+        }
+    }
+    
+    func toggleButtonColor(direction : LiftState) {
+        
+        if direction == LiftState.GoingUp {
+        btnUp.backgroundColor = UIColor.yellowColor()
+        } else {
+        btnDown.backgroundColor = UIColor.yellowColor()
         }
     }
  }

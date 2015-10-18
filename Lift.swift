@@ -15,13 +15,13 @@ protocol LiftMovementProtocol {
 class Lift : NSObject {
     
     
-    let maxWeight :  Int = 800          // Maximum Weight capacity of the lift in Kilo Grams
-    var currentWeight :  Int = 0        // Current total weight of the people in the lift
     var currentState : LiftState = LiftState.Stationary // Current State of the lift
     var currentFloor : Int = 0          // Floor at which lift is at stationary
     var pressedButtons = NSMutableArray()  // All the pressed buttons in the lift
+  
     var upPressedButtons = NSMutableArray()
     var downPressedButtons = NSMutableArray()
+   
     var priority :  Int = 0
     var delegate : LiftMovementProtocol?
     
@@ -36,6 +36,13 @@ class Lift : NSObject {
         }
     }
 
+    var firstLift : Lift {
+       return MainController.totalLifts.firstObject as! Lift
+    }
+    
+    var secondLift : Lift {
+        return MainController.totalLifts.lastObject as! Lift
+    }
     
     init(LiftNumber number :  Int) {
         self.number = number
@@ -45,14 +52,14 @@ class Lift : NSObject {
         
         self.currentState = direction
         
-        NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: "update", userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "update", userInfo: nil, repeats: false)
         
 
     }
     
     func update() {
         
-        let toFloor = pressedButtons.pop() as! LiftRequest
+        let toFloor = MainController.totalLifts.pop() as! LiftRequest
 
         if self.currentState == LiftState.GoingUp {
             upPressedButtons.pop()

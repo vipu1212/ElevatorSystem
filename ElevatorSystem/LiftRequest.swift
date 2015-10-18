@@ -14,8 +14,8 @@ protocol LiftCallProtocol {
 
 class LiftRequest : LiftButtonProtocol {
     
-    var leftPriority :  Int = 0
-    var rightPriority : Int = 0
+    private var leftPriority :  Int = 0
+    private var rightPriority : Int = 0
     var currentFloor : Int?
     static var upPressedOnAllFloors : NSMutableArray = NSMutableArray()
     static var downPressedOnAllFloors : NSMutableArray = NSMutableArray()

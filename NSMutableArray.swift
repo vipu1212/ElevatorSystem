@@ -10,9 +10,9 @@ import Foundation
 
 extension NSMutableArray {
     
-    func pop() -> AnyObject {
+    func pop() -> AnyObject {    // First In First Out
        let last: AnyObject = self.lastObject!
-       self.removeLastObject()
+       self.removeObjectAtIndex(0)
        return last
     }
     

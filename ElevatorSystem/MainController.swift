@@ -54,7 +54,8 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
-        cell.fillCellData(ForFloor: indexPath.row)
+        
+        cell.fillCellData(indexPath.row)
         
         return cell
     }
@@ -106,41 +107,63 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         var liftCell : LiftCell
         
-        if openLifts.count < 2 {
-        
-        
-        let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
-        
-        if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
-            
-          liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+        let visibleFloor = NSMutableArray(array: self.floorTableView.indexPathsForVisibleRows()!)
+
+        if lift.number == lift.firstLift.number {
+            self.lblLeftCurrentFloor.text = "\(lift.currentFloor)"
         } else {
-            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+            self.lblRightCurrentFloor.text = "\(lift.currentFloor)"
         }
         
-        liftCell.setOpenLiftImage()
+        
+        if lift.currentState == LiftState.GoingUp {
+            LiftRequest.upPressedOnAllFloors.pop()
             
-        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
+        } else {
+            LiftRequest.downPressedOnAllFloors.pop()
+        }
+        
+        if openLifts.count < 2 {
             
+            
+        if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
+            {
+        let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
+         
+        floorCell.toggleButtonColor(lift.currentState)
+                
+        if lift.number == lift.firstLift.number {
+            
+          liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+            
+          
+        } else {
+            liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+            
+            
+        }
+              liftCell.setOpenLiftImage()
+              NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveToNextInQueue:", userInfo: liftCell, repeats: false)
+        }
         }
     }
     
-    func moveToNextInQueue(liftCell : LiftCell) {
+    func moveToNextInQueue(liftCell : NSTimer) {
         
-     liftCell.setClosedLiftImage()
+        (liftCell.userInfo as! LiftCell).setClosedLiftImage()
     }
     
     //MARK:- TextView methods
     
     func removeFloorFromTextView(lift : Lift) {
         if lift.currentState == LiftState.GoingUp {
-            if lift.number == MainController.totalLifts.firstObject as! Lift {
+            if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
                 editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
             } else {
                 editRightUpStopQueue.text = lift.upPressedButtons.displayFloor()
             }
         } else {
-            if lift.number == MainController.totalLifts.firstObject as! Lift {
+            if lift.number == (MainController.totalLifts.firstObject as! Lift).number {
                 editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
             } else {
                 

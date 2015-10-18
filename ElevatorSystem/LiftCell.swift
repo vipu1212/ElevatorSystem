@@ -13,7 +13,7 @@ class LiftCell: UICollectionViewCell {
     @IBOutlet weak var liftImage: UIImageView!
     
     func setOpenLiftImage() {
-            liftImage.image = UIImage(named: "openlift")
+        liftImage.image = UIImage(named: "openlift")
     }
     
     func setClosedLiftImage() {
