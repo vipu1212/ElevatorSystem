@@ -33,18 +33,18 @@ class Lift : NSObject {
                 number = oldID
             } else {
                 
-                MainController.totalLifts.replaceObjectAtIndex(MainController.totalLifts.indexOfObject(oldID), withObject: number)
+                FloorRequest.totalLifts.replaceObjectAtIndex(FloorRequest.totalLifts.indexOfObject(oldID), withObject: number)
             }
         }
     }
 
-    var firstLift : Lift {
-       return MainController.totalLifts.firstObject as! Lift
-    }
-    
-    var secondLift : Lift {
-        return MainController.totalLifts.lastObject as! Lift
-    }
+//    var firstLift : Lift {
+//       return FloorRequest.totalLifts.firstObject as! Lift
+//    }
+//    
+//    var secondLift : Lift {
+//        return FloorRequest.totalLifts.lastObject as! Lift
+//    }
     
     init(LiftNumber number :  Int) {
         self.number = number
@@ -56,7 +56,7 @@ class Lift : NSObject {
         
         self.setLiftDirection(request)
         
-       let timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+       let timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
         
         // Called just the first time before calling moveOn function
         // To Stop the current timer if interrupt occured
@@ -135,8 +135,8 @@ class Lift : NSObject {
     
     func alreadyExistingID(newID : Int) -> Bool{
     
-        if !(MainController.totalLifts.count == 0) {
-            for liftNumber in MainController.totalLifts {
+        if !(FloorRequest.totalLifts.count == 0) {
+            for liftNumber in FloorRequest.totalLifts {
                 if (newID == liftNumber as! Int) {
                     println("This ID Already exists ! Value set to previous ID")
                     return true

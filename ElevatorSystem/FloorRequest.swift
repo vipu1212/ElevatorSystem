@@ -19,8 +19,9 @@ class FloorRequest : NSObject, LiftButtonProtocol {
     var currentFloor : Int?
     static var upPressedOnAllFloors : NSMutableArray = NSMutableArray()
     static var downPressedOnAllFloors : NSMutableArray = NSMutableArray()
-    var leftLift : Lift?
-    var rightLift : Lift?
+    static var firstLift : Lift?
+    static var secondLift : Lift?
+    static var totalLifts : NSMutableArray = NSMutableArray(array: [])
     var delegate : LiftCallProtocol?
     var direction : Direction?
     
@@ -70,18 +71,18 @@ class FloorRequest : NSObject, LiftButtonProtocol {
     
     func anyLiftStationary()  {
         
-        if leftLift?.currentState == Direction.Stationary {
+        if FloorRequest.firstLift?.currentState == Direction.Stationary {
            leftPriority += 1
         }
-        if rightLift?.currentState == Direction.Stationary {
+        if FloorRequest.secondLift?.currentState == Direction.Stationary {
             rightPriority += 1
         }
     }
     
     func nearestLift()  {
         
-        let leftLiftDifference = abs(leftLift!.currentFloor - currentFloor!)
-        let rightLiftDifference = abs(rightLift!.currentFloor - currentFloor!)
+        let leftLiftDifference = abs(FloorRequest.firstLift!.currentFloor - currentFloor!)
+        let rightLiftDifference = abs(FloorRequest.secondLift!.currentFloor - currentFloor!)
         
         if leftLiftDifference < rightLiftDifference {
            leftPriority += 1
@@ -93,29 +94,29 @@ class FloorRequest : NSObject, LiftButtonProtocol {
     
     func checkLiftSuitableOnDirection()  {
         
-       if leftLift!.currentState  == Direction.Stationary && rightLift!.currentState == Direction.Stationary
+       if FloorRequest.firstLift!.currentState  == Direction.Stationary && FloorRequest.secondLift!.currentState == Direction.Stationary
        {
          nearestLift()
         if leftPriority == rightPriority {
            randomLift()
         }
        }
-        if let leftLiftBelow = leftLift!.isBelow(self),
-                rightLiftBelow = rightLift!.isBelow(self)
+        if let leftLiftBelow = FloorRequest.firstLift!.isBelow(self),
+                rightLiftBelow = FloorRequest.secondLift!.isBelow(self)
         {
-            if leftLiftBelow && leftLift!.currentState == Direction.GoingUp && direction == Direction.GoingUp {
+            if leftLiftBelow && FloorRequest.firstLift!.currentState == Direction.GoingUp && direction == Direction.GoingUp {
                 leftPriority += 1
-            } else if rightLiftBelow && rightLift?.currentState == Direction.GoingUp && direction == Direction.GoingUp {
+            } else if rightLiftBelow && FloorRequest.secondLift!.currentState == Direction.GoingUp && direction == Direction.GoingUp {
                 rightPriority += 1
             }
             
-            else if !leftLiftBelow && leftLift?.currentState == Direction.GoingDown && direction == Direction.GoingDown {
+            else if !leftLiftBelow && FloorRequest.firstLift!.currentState == Direction.GoingDown && direction == Direction.GoingDown {
                 leftPriority += 1
-            } else if !rightLiftBelow && rightLift?.currentState == Direction.GoingDown && direction == Direction.GoingDown {
+            } else if !rightLiftBelow && FloorRequest.secondLift!.currentState == Direction.GoingDown && direction == Direction.GoingDown {
                 rightPriority += 1
             }
         }
-        else if direction == leftLift?.currentState {
+        else if direction == FloorRequest.firstLift!.currentState {
             leftPriority += 1
         } else {
             rightPriority += 1
@@ -124,9 +125,9 @@ class FloorRequest : NSObject, LiftButtonProtocol {
     
     
     func leastRequestQeueu()  {
-        if leftLift!.totalRequestCount < rightLift!.totalRequestCount {
+        if FloorRequest.firstLift!.totalRequestCount < FloorRequest.secondLift!.totalRequestCount {
             leftPriority += 1
-        } else if rightLift!.totalRequestCount < leftLift!.totalRequestCount {
+        } else if FloorRequest.secondLift!.totalRequestCount < FloorRequest.firstLift!.totalRequestCount {
            rightPriority += 1
         }
     }
@@ -135,10 +136,10 @@ class FloorRequest : NSObject, LiftButtonProtocol {
     func addRequestInLift() {
                 
         if leftPriority > rightPriority {
-            delegate?.addToRequestQueueForLift(leftLift!, request: self)
+            delegate?.addToRequestQueueForLift(FloorRequest.firstLift!, request: self)
         }
         else if rightPriority > leftPriority {
-            delegate?.addToRequestQueueForLift(rightLift!, request: self)
+            delegate?.addToRequestQueueForLift(FloorRequest.secondLift!, request: self)
         }
             else {
             randomLift()

@@ -26,21 +26,17 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBOutlet weak var floorTableView: UITableView!
     
-    var liftCell : LiftCell?
-    
-    static var totalLifts : NSMutableArray = NSMutableArray(array: [])
     
     static var openLifts : NSMutableArray = NSMutableArray()
-    
-    var leftLift = Lift(LiftNumber: 1)
-    
-    var rightLift = Lift(LiftNumber: 2)
     
     var descriptor: NSSortDescriptor = NSSortDescriptor(key: "currentFloor", ascending: true)
     
     override func viewDidAppear(animated: Bool) {
         
-        MainController.totalLifts.addObjectsFromArray([leftLift, rightLift])
+        FloorRequest.firstLift = Lift(LiftNumber: 1)
+        FloorRequest.secondLift = Lift(LiftNumber: 2)
+        
+        FloorRequest.totalLifts.addObjectsFromArray([FloorRequest.firstLift!, FloorRequest.secondLift!])
     }
     
     
@@ -66,7 +62,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else {
             
-            // If lift is moving
+       // If lift is moving
             lift.moveLiftForRequest(request, interruptCall: true)
         }
     }
@@ -131,7 +127,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func updatedCurrentLiftLabel(lift: Lift) {
     
-        if lift == lift.firstLift {
+        if lift == FloorRequest.firstLift {
             
             lblLeftCurrentFloor.text = "\(lift.currentFloor)"
             
@@ -147,6 +143,8 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func updateLiftImage(lift: Lift, request: FloorRequest) {
   
+            var liftCell : LiftCell?
+        
         let visibleFloor = NSMutableArray(array: self.floorTableView.indexPathsForVisibleRows()!)
         
         if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
@@ -156,7 +154,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             floorCell.toggleButtonColor(request.direction!)
             
-            if lift.number == lift.firstLift.number {
+            if lift == FloorRequest.firstLift {
                 
                 liftCell =  floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell
                 
@@ -170,9 +168,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             liftCell!.setOpenLiftImage()
             
-            MainController.openLifts.addObject(lift)
+            
             
         }
+        MainController.openLifts.addObject(lift)
         
     }
     
@@ -186,11 +185,11 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if liftNumber == 1
         {
-            lift = MainController.totalLifts.firstObject as! Lift
+            lift = FloorRequest.firstLift!
         }
         else
         {
-            lift = MainController.totalLifts.lastObject as! Lift
+            lift = FloorRequest.secondLift!
         }
         
         
@@ -252,7 +251,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if floorRequest.direction == Direction.GoingUp {
 
-            if lift == lift.firstLift {
+            if lift == FloorRequest.firstLift {
                 
                 editLeftUpStopQueue.text = lift.upPressedButtons.displayFloor()
                 
@@ -264,7 +263,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else {
             
-            if lift.number == lift.firstLift {
+            if lift.number == FloorRequest.firstLift {
                 
                 editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
                 
@@ -284,7 +283,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func appendFloorInTextView(lift: Lift, floor: FloorRequest) {
         
-        if lift == leftLift {
+        if lift == FloorRequest.firstLift {
             
             if floor.direction == Direction.GoingUp {
                 
