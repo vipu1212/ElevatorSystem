@@ -50,6 +50,7 @@ class FloorCell: UITableViewCell {
         
         btnUp.tag = floor
         btnDown.tag = floor
+        
     }
     
     func checkAlreadyPressedButtons(floor : Int) {
@@ -78,14 +79,17 @@ class FloorCell: UITableViewCell {
             
             if (openLift as! Lift).currentFloor == floor {
             
-                if (openLift as! Lift).number == 0 {
+                if (openLift as! Lift).number == 1 {
                 
                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
-            
+                liftCell.setOpenLiftImage()
+                break
                 } else {
                     liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+                    liftCell.setOpenLiftImage()
+                    break
                 }
-                 liftCell.setOpenLiftImage()
+                 
             } else
             {
                 liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell

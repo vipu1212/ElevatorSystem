@@ -39,7 +39,7 @@
                                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     </collectionViewFlowLayout>
                                                     <cells>
-                                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" reuseIdentifier="liftCell" id="2yn-me-K6d" customClass="LiftCell" customModule="ElevatorSystem" customModuleProvider="target">
+                                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="left" reuseIdentifier="liftCell" id="2yn-me-K6d" customClass="LiftCell" customModule="ElevatorSystem" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -54,15 +54,13 @@
                                                                         <color key="backgroundColor" red="0.5952511627" green="0.95172427400000004" blue="0.75315109800000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="go"/>
-                                                                        <variation key="widthClass=compact" fixedFrame="YES">
-                                                                            <rect key="frame" x="-8" y="45" width="97" height="30"/>
-                                                                        </variation>
                                                                     </textField>
                                                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFT-4Y-mcK">
                                                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                                         <color key="backgroundColor" red="0.60520576130000003" green="0.82922121120000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="18"/>
                                                                         <state key="normal" title="Go">
-                                                                            <color key="titleColor" red="0.98843962210000003" green="1" blue="0.93883593720000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                                         </state>
                                                                         <variation key="widthClass=compact" fixedFrame="YES">
@@ -82,6 +80,8 @@
                                                                     <variation key="widthClass=compact" constant="0.0"/>
                                                                 </constraint>
                                                                 <constraint firstItem="CIf-62-8VD" firstAttribute="leading" secondItem="2yn-me-K6d" secondAttribute="leading" id="WWP-e0-rUG"/>
+                                                                <constraint firstAttribute="centerX" secondItem="6dH-GI-LOf" secondAttribute="centerX" id="irf-Yz-GxP"/>
+                                                                <constraint firstAttribute="centerY" secondItem="6dH-GI-LOf" secondAttribute="centerY" id="zic-jf-jbO"/>
                                                             </constraints>
                                                             <variation key="default">
                                                                 <mask key="subviews">
@@ -94,6 +94,8 @@
                                                                     <exclude reference="Cho-Ed-52e"/>
                                                                     <exclude reference="OwA-IZ-5ad"/>
                                                                     <exclude reference="WWP-e0-rUG"/>
+                                                                    <exclude reference="irf-Yz-GxP"/>
+                                                                    <exclude reference="zic-jf-jbO"/>
                                                                 </mask>
                                                             </variation>
                                                             <variation key="widthClass=compact">
@@ -107,6 +109,8 @@
                                                                     <include reference="Cho-Ed-52e"/>
                                                                     <include reference="OwA-IZ-5ad"/>
                                                                     <include reference="WWP-e0-rUG"/>
+                                                                    <include reference="irf-Yz-GxP"/>
+                                                                    <include reference="zic-jf-jbO"/>
                                                                 </mask>
                                                             </variation>
                                                             <connections>
