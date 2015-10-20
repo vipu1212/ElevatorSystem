@@ -10,7 +10,7 @@
 import UIKit
 
 protocol LiftFloorSelectProtocol {
-    func closeLift(floor : Int?, liftNumber : Int)
+    func closeLift(requestedFloor : Int?, liftNumber : Int)
 }
 
 

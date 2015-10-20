@@ -12,7 +12,7 @@ protocol LiftMovementProtocol {
     func movedOneFloor(lift: Lift, reachedRequest: Bool, request : FloorRequest)
 }
 
-class Lift : NSObject {
+class Lift : NSObject , DebugPrintable{
     
     
     var currentState : Direction = Direction.Stationary // Current State of the lift
@@ -38,13 +38,6 @@ class Lift : NSObject {
         }
     }
 
-//    var firstLift : Lift {
-//       return FloorRequest.totalLifts.firstObject as! Lift
-//    }
-//    
-//    var secondLift : Lift {
-//        return FloorRequest.totalLifts.lastObject as! Lift
-//    }
     
     init(LiftNumber number :  Int) {
         self.number = number
@@ -56,16 +49,10 @@ class Lift : NSObject {
         
         self.setLiftDirection(request)
         
-       let timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+     //   dispatch_async(DISPATCH_QUEUE_PRIORITY_HIGH, {
         
-        // Called just the first time before calling moveOn function
-        // To Stop the current timer if interrupt occured
-        
-        if interruptCall {
-            timer.invalidate()
-            
-            ////**** ADDITIONAL METHODS ****/////
-        }
+         let timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+    // })
     }
     
     
@@ -74,23 +61,40 @@ class Lift : NSObject {
         if self.currentState == Direction.GoingUp {
             println("UP")
         } else {
-             println("DOWN")
+            println("DOWN")
         }
         
         let liftCurrentFloor = updatedCurrentFloor()
+        
         let requestedFloor = (request.userInfo as! FloorRequest).currentFloor
         
-        if liftCurrentFloor == requestedFloor {
-            
-            // Stop Moving Lift Requested Floor Reached
-            delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
-            request.invalidate()
-        } else {
-            
-            // Continue moving lift until Requested Floor reached
-            delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
+        let requestArray : NSMutableArray
+        
+        if (request.userInfo as! FloorRequest).direction == Direction.GoingUp {
+            requestArray = upPressedButtons
+        }
+        else if (request.userInfo as! FloorRequest).direction == Direction.GoingDown
+        {
+            requestArray = downPressedButtons
+        }
+        else {
+            requestArray = downPressedButtons
+            println("*****ERROR IN MOVE ONE FLOOR()*****")
         }
         
+        if requestArray.count != 0 {
+        
+        if (requestArray.firstObject as! FloorRequest).currentFloor == liftCurrentFloor
+        {
+            
+            delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
+            request.invalidate()
+        }
+        else
+        {
+            delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
+        }
+        }
     }
     
     //MARK:-
@@ -105,7 +109,7 @@ class Lift : NSObject {
             }
         } else {
             
-            /******* SET LIFT OPEN AND CONTINUE FLOW ***********/
+            /******* vader SET LIFT OPEN AND CONTINUE FLOW ***********/
         }
         
     }
@@ -144,5 +148,9 @@ class Lift : NSObject {
             }
         }
         return false
+    }
+    
+    override var description : String{
+        return "\(currentFloor) --- \(number)"
     }
 }

@@ -52,7 +52,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         addRequestInArray(lift, request: request)
         
         appendFloorInTextView(lift, floor: request)
-        
+/*
         
         // If lift is stationary
         
@@ -63,6 +63,20 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } else {
             
        // If lift is moving
+            
+        }
+        */
+        if MainController.openLifts.count == 0
+        {
+            lift.moveLiftForRequest(request, interruptCall: false)
+        }
+        else
+        {
+        for openLift in MainController.openLifts {
+            if (openLift as! Lift).number == lift.number {
+                return
+            }
+         }
             lift.moveLiftForRequest(request, interruptCall: true)
         }
     }
@@ -73,13 +87,13 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if request.direction == Direction.GoingUp {
             
             lift.upPressedButtons.addObject(request)
-            
+            FloorRequest.upPressedOnAllFloors.addObject(request.currentFloor!)
              //  lift.upPressedButtons = NSMutableArray(array: lift.upPressedButtons.sortedArrayUsingDescriptors([descriptor]))
             
         } else {
             
             lift.downPressedButtons.addObject(request)
-            
+            FloorRequest.downPressedOnAllFloors.addObject(request.currentFloor!)
             //   lift.downPressedButtons = NSMutableArray(array: lift.downPressedButtons.sortedArrayUsingDescriptors([descriptor]))
             
         }
@@ -89,16 +103,21 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
    
     func movedOneFloor(lift: Lift, reachedRequest: Bool, request: FloorRequest) {
         
-        updatedCurrentLiftLabel(lift)
+     //   dispatch_sync(dispatch_get_main_queue(), {
+        
+            self.updatedCurrentLiftLabel(lift)
+            
+            if reachedRequest {
+                
+                self.removeRequestFromArray(lift, request: request)
+                
+                self.removeFloorFromTextView(lift, floorRequest: request)
+                
+                self.updateLiftImage(lift, request: request)
+            }
 
-        if reachedRequest {
-            
-            removeRequestFromArray(lift, request: request)
-            
-            removeFloorFromTextView(lift, floorRequest: request)
-            
-            updateLiftImage(lift, request: request)
-        }
+   //     })
+        
     }
     
     
@@ -177,7 +196,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     
-    func closeLift(floor: Int?, liftNumber: Int) {
+    func closeLift(requestedFloor: Int?, liftNumber: Int) {
         
         var lift : Lift
         
@@ -191,7 +210,8 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         
-        if let requestFloor = floor {
+        
+        if let requestFloor = requestedFloor {
             
             let direction : Direction
             
@@ -208,22 +228,14 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 direction = Direction.Stationary
                 
             }
-            
-            if direction != Direction.Stationary {
-                
-                let request = FloorRequest(floor: requestFloor, direction: direction)
-                
-                addToRequestQueueForLift(lift, request: request)
-            }
-            
-        }
+         moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
         
-        moveToNextInQueue(lift)
+        }
     }
     
     
     
-    func moveToNextInQueue(lift : Lift) {
+    func moveToNextInQueue(requestedFloor: Int?,lift : Lift, direction : Direction) {
         
         var liftCell : LiftCell
         
@@ -236,8 +248,19 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         liftCell.setClosedLiftImage()
+        
         MainController.openLifts.removeObject(lift)
-    }
+        
+        if direction != Direction.Stationary {
+            
+            let request = FloorRequest(floor: requestedFloor!, direction: direction)
+            
+            addToRequestQueueForLift(lift, request: request)
+        }
+        
+  }
+
+    
     
     
     
@@ -261,7 +284,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else {
             
-            if lift.number == FloorRequest.firstLift {
+            if lift == FloorRequest.firstLift {
                 
                 editLeftDownStopQueue.text = lift.downPressedButtons.displayFloor()
                 
@@ -337,6 +360,9 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        
+        
        let cell = tableView.dequeueReusableCellWithIdentifier("floorCell") as! FloorCell
        cell.fillCellData(indexPath.row)
         return cell
@@ -367,8 +393,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("liftCell", forIndexPath: indexPath) as! LiftCell
         

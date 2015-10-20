@@ -38,8 +38,9 @@ class FloorCell: UITableViewCell {
         {
             if floor == 10
             {
-            btnUp.hidden = true
-            } else {
+                btnUp.hidden = true
+            } else
+            {
                 btnUp.hidden = false
                 btnDown.hidden = false
             }
@@ -85,26 +86,21 @@ class FloorCell: UITableViewCell {
                 
                 if (openLift as! Lift).number == 1 {
                     
-                    liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+                    liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell)!
                     liftCell.setOpenLiftImage()
                     break
                 } else {
-                    liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+                    liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell)!
                     liftCell.setOpenLiftImage()
                     break
                 }
-                
+            } else {
+                liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell)!
+                liftCell.setClosedLiftImage()
+                liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell)!
+                liftCell.setClosedLiftImage()
+
             }
-//            else
-//            {
-//                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
-//                
-//                liftCell.setClosedLiftImage()
-//                
-//                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
-//                
-//                liftCell.setClosedLiftImage()
-//            }
         }
     }
 

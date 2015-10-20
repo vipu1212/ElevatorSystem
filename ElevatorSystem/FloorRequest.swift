@@ -12,7 +12,7 @@ protocol LiftCallProtocol {
     func addToRequestQueueForLift(lift: Lift, request : FloorRequest)
 }
 
-class FloorRequest : NSObject, LiftButtonProtocol {
+class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
     
     private var leftPriority :  Int = 0
     private var rightPriority : Int = 0
@@ -38,12 +38,12 @@ class FloorRequest : NSObject, LiftButtonProtocol {
         
         currentFloor = floor
         
-        if btnDirection == "up" {
-            FloorRequest.upPressedOnAllFloors.addObject(currentFloor!)
+        if btnDirection == "up"
+        {
             direction = Direction.GoingUp  // Direction of the request
         }
-        else {
-            FloorRequest.downPressedOnAllFloors.addObject(currentFloor!)
+        else
+        {
             direction = Direction.GoingDown
         }
         
@@ -156,4 +156,8 @@ class FloorRequest : NSObject, LiftButtonProtocol {
         }
         rightPriority += 1
      }
+    
+    override var description : String{
+        return "\(currentFloor) --- \(direction)"
+    }
 }
