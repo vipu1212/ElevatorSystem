@@ -47,9 +47,7 @@ class FloorCell: UITableViewCell {
         }
         
         checkAlreadyPressedButtons(floor)
-        
         checkOpenLifts(floor)
-        
         btnUp.tag = floor
         btnDown.tag = floor
         
@@ -77,7 +75,6 @@ class FloorCell: UITableViewCell {
         }
     }
     
-    
     func checkOpenLifts(floor : Int) {
         
         for openLift in MainController.openLifts {
@@ -97,19 +94,20 @@ class FloorCell: UITableViewCell {
                     break
                 }
                 
-            } else
-            {
-                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
-                
-                liftCell.setClosedLiftImage()
-                
-                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
-                
-                liftCell.setClosedLiftImage()
             }
+//            else
+//            {
+//                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as! LiftCell
+//                
+//                liftCell.setClosedLiftImage()
+//                
+//                liftCell  =  self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as! LiftCell
+//                
+//                liftCell.setClosedLiftImage()
+//            }
         }
-
     }
+
     
     @IBAction func onButtonPressed(sender: UIButton) {
         

@@ -143,7 +143,9 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func updateLiftImage(lift: Lift, request: FloorRequest) {
   
-            var liftCell : LiftCell?
+        MainController.openLifts.addObject(lift)
+        
+        var liftCell : LiftCell?
         
         let visibleFloor = NSMutableArray(array: self.floorTableView.indexPathsForVisibleRows()!)
         
@@ -164,14 +166,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 
             }
             
-            
-            
             liftCell!.setOpenLiftImage()
             
-            
-            
         }
-        MainController.openLifts.addObject(lift)
+        
         
     }
     
@@ -379,9 +377,5 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
         
     }
-    
-    
-    
-    
     
 }

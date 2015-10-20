@@ -61,9 +61,6 @@ class LiftCell: UICollectionViewCell {
         }
         
         floorInputTextField.text = ""
-        
-        
-        
     }
     
 }
