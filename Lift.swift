@@ -108,22 +108,20 @@ class Lift : NSObject , DebugPrintable{
                 self.currentState = Direction.GoingDown
             }
         } else {
-            
-            /******* vader SET LIFT OPEN AND CONTINUE FLOW ***********/
+            println("Unhandled condition !!! ")
         }
         
     }
 
     
-    func updatedCurrentFloor() -> Int?{
+    func updatedCurrentFloor() -> Int{
         
         if self.currentState == Direction.GoingDown {
            return --currentFloor
         } else if self.currentState == Direction.GoingUp {
            return ++currentFloor
         } else {
-            print("Error case in movedOneFloor()")
-            return nil
+            return currentFloor
         }
     }
     

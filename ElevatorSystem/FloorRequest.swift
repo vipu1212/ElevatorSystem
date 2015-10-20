@@ -53,7 +53,6 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
     
     func prioritizeCall () {
     
-        
         // CHECK  ANY  STATIONARY  LIFT
         anyLiftStationary()
         
@@ -66,7 +65,9 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         // CHECK  REQUEST  QUEUE  OF  LIFT
         leastRequestQeueu()
         
-        addRequestInLift()
+        if !definiteCondition() {
+         addRequestInLift()   
+        }
     }
     
     func anyLiftStationary()  {
@@ -91,6 +92,20 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         }
     }
 
+    func definiteCondition() -> Bool{
+        
+       if (currentFloor == FloorRequest.firstLift?.currentFloor && (FloorRequest.firstLift?.currentState == Direction.Stationary || FloorRequest.firstLift?.currentState == direction))
+       {
+         delegate?.addToRequestQueueForLift(FloorRequest.firstLift!, request: self)
+        return true
+       }
+       else if (currentFloor == FloorRequest.secondLift?.currentFloor && (FloorRequest.secondLift?.currentState == Direction.Stationary || FloorRequest.secondLift?.currentState == direction))
+       {
+        delegate?.addToRequestQueueForLift(FloorRequest.secondLift!, request: self)
+        return true
+       }
+        return false
+    }
     
     func checkLiftSuitableOnDirection()  {
         

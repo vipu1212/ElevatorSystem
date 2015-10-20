@@ -99,7 +99,6 @@ class FloorCell: UITableViewCell {
                 liftCell.setClosedLiftImage()
                 liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell)!
                 liftCell.setClosedLiftImage()
-
             }
         }
     }
@@ -108,8 +107,15 @@ class FloorCell: UITableViewCell {
     @IBAction func onButtonPressed(sender: UIButton) {
         
         if sender.backgroundColor != UIColor.greenColor() {
+        
+            if FloorRequest.firstLift?.currentFloor != sender.tag && FloorRequest.secondLift?.currentFloor != sender.tag
+            {
+                (sender as UIButton).backgroundColor = UIColor.greenColor()
+            }
             
-        (sender as UIButton).backgroundColor = UIColor.greenColor()
+            
+            
+        
             
         let request = FloorRequest()
             

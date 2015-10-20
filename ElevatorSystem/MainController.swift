@@ -47,25 +47,17 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func addToRequestQueueForLift(lift: Lift, request: FloorRequest) {
 
+        if lift.currentFloor == request.currentFloor {
+            openLiftOnSameFloor(lift)
+            return
+        }
+        
         lift.delegate = self
         
         addRequestInArray(lift, request: request)
         
         appendFloorInTextView(lift, floor: request)
-/*
-        
-        // If lift is stationary
-        
-        if lift.currentState == Direction.Stationary {
-            
-            lift.moveLiftForRequest(request, interruptCall: false)
-            
-        } else {
-            
-       // If lift is moving
-            
-        }
-        */
+
         if MainController.openLifts.count == 0
         {
             lift.moveLiftForRequest(request, interruptCall: false)
@@ -81,6 +73,26 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    
+    func openLiftOnSameFloor(lift: Lift) {
+    
+        let liftCell : LiftCell
+        
+        let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
+        
+        if lift == FloorRequest.firstLift
+        {
+            liftCell =  (floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell)!
+        }
+        else
+        {
+            liftCell =  (floorCell.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell)!
+        }
+        
+        MainController.openLifts.addObject(lift)
+        
+        liftCell.setOpenLiftImage()
+    }
     
     func addRequestInArray(lift: Lift, request: FloorRequest) {
         
@@ -173,7 +185,9 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         {
              let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
             
+            
             floorCell.toggleButtonColor(request.direction!)
+            
             
             if lift == FloorRequest.firstLift {
                 
@@ -218,24 +232,55 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if requestFloor < lift.currentFloor {
                 
                 direction = Direction.GoingDown
-                
+                moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
+            
             } else if requestFloor > lift.currentFloor {
                 
                 direction = Direction.GoingUp
-                
+                moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
+            
             } else {
                 
-                direction = Direction.Stationary
-                
+                let alert = UIAlertView(title: ":/ :/", message: "Nothing will happen", delegate: self, cancelButtonTitle: "Ok")
+                alert.show()
+                return  
             }
-         moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
-        
+        } else {
+            
+            let nextRequest : FloorRequest
+            
+            if lift.upPressedButtons.count != 0 && lift.downPressedButtons.count != 0 {
+            
+            if lift.currentState == Direction.GoingUp {
+                nextRequest = lift.upPressedButtons.pop() as! FloorRequest
+                FloorRequest.upPressedOnAllFloors.pop()
+            } else {
+                nextRequest = lift.downPressedButtons.pop() as! FloorRequest
+                FloorRequest.downPressedOnAllFloors.pop()
+            }
+            
+            moveToNextInQueue(nextRequest.currentFloor, lift: lift, direction: nextRequest.direction!)
+           }
         }
+        
+        checkAndSetLiftStationary(lift)
     }
     
     
+    func checkAndSetLiftStationary(lift : Lift) {
+        
+        if lift.upPressedButtons.count == 0 && lift.downPressedButtons.count == 0 && FloorRequest.upPressedOnAllFloors.count == 0 && FloorRequest.downPressedOnAllFloors.count == 0 {
+            
+            lift.currentState = Direction.Stationary
+            
+            MainController.openLifts.removeObject(lift)
+            
+            moveToNextInQueue(nil, lift: lift, direction: Direction.Stationary)
+        }
+    }
     
     func moveToNextInQueue(requestedFloor: Int?,lift : Lift, direction : Direction) {
+        
         
         var liftCell : LiftCell
         
@@ -248,6 +293,10 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         liftCell.setClosedLiftImage()
+        
+        if requestedFloor == nil {
+            return
+        }
         
         MainController.openLifts.removeObject(lift)
         
