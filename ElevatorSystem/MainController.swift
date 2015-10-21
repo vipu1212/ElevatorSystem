@@ -99,14 +99,18 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if request.direction == Direction.GoingUp {
             
             lift.upPressedButtons.addObject(request)
-            FloorRequest.upPressedOnAllFloors.addObject(request.currentFloor!)
-             //  lift.upPressedButtons = NSMutableArray(array: lift.upPressedButtons.sortedArrayUsingDescriptors([descriptor]))
+            
+            lift.upPressedButtons = lift.upPressedButtons.sortAscendingOnFloorBasis()
+            
+            FloorRequest.upPressedOnAllFloors = FloorRequest.upPressedOnAllFloors.sortAscendingOnFloorBasis()
             
         } else {
             
             lift.downPressedButtons.addObject(request)
-            FloorRequest.downPressedOnAllFloors.addObject(request.currentFloor!)
-            //   lift.downPressedButtons = NSMutableArray(array: lift.downPressedButtons.sortedArrayUsingDescriptors([descriptor]))
+           
+            lift.downPressedButtons = lift.downPressedButtons.sortAscendingOnFloorBasis()
+            
+            FloorRequest.downPressedOnAllFloors = FloorRequest.downPressedOnAllFloors.sortAscendingOnFloorBasis()
             
         }
         
@@ -142,14 +146,16 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             lift.upPressedButtons.pop()
             
+            if FloorRequest.upPressedOnAllFloors.count != 0 {
             FloorRequest.upPressedOnAllFloors.pop()
+            }
             
         } else {
             
             lift.downPressedButtons.pop()
-            
+            if FloorRequest.upPressedOnAllFloors.count != 0 {
             FloorRequest.downPressedOnAllFloors.pop()
-            
+            }
         }
         
     }
@@ -183,7 +189,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if visibleFloor.containsObject(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0))
             
         {
-             let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
+            let floorCell =  floorTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 10-lift.currentFloor, inSection: 0)) as! FloorCell
             
             
             floorCell.toggleButtonColor(request.direction!)
@@ -200,10 +206,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
             liftCell!.setOpenLiftImage()
-            
         }
-        
-        
     }
     
     

@@ -29,7 +29,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3C5-B9-ZYH" id="eb7-7h-aHD">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pxO-Fm-aBJ">
+                                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pxO-Fm-aBJ">
                                                     <rect key="frame" x="0.0" y="0.0" width="560" height="184"/>
                                                     <color key="backgroundColor" red="0.98843962210000003" green="1" blue="0.93883593720000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="wBd-hC-zrQ">
@@ -240,8 +240,8 @@
                                             <constraints>
                                                 <constraint firstItem="lCi-UN-Hfy" firstAttribute="top" secondItem="eb7-7h-aHD" secondAttribute="top" id="4jF-Js-jJ9"/>
                                                 <constraint firstItem="pxO-Fm-aBJ" firstAttribute="top" secondItem="eb7-7h-aHD" secondAttribute="top" id="7R7-b4-Qfw"/>
-                                                <constraint firstAttribute="bottom" secondItem="pxO-Fm-aBJ" secondAttribute="bottom" id="EjR-6w-XAh"/>
-                                                <constraint firstAttribute="trailing" secondItem="pxO-Fm-aBJ" secondAttribute="trailing" constant="100" id="VUD-4w-X5Z"/>
+                                                <constraint firstAttribute="bottom" secondItem="pxO-Fm-aBJ" secondAttribute="bottom" constant="-35" id="EjR-6w-XAh"/>
+                                                <constraint firstAttribute="trailing" secondItem="pxO-Fm-aBJ" secondAttribute="trailing" id="VUD-4w-X5Z"/>
                                                 <constraint firstAttribute="bottom" secondItem="lCi-UN-Hfy" secondAttribute="bottom" id="fff-Fy-cni"/>
                                                 <constraint firstItem="pxO-Fm-aBJ" firstAttribute="leading" secondItem="eb7-7h-aHD" secondAttribute="leading" id="pVU-Sc-pmF"/>
                                                 <constraint firstAttribute="trailing" secondItem="lCi-UN-Hfy" secondAttribute="trailing" id="v5h-mZ-2LN"/>

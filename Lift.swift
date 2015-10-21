@@ -88,6 +88,7 @@ class Lift : NSObject , DebugPrintable{
         {
             
             delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
+            
             request.invalidate()
         }
         else
