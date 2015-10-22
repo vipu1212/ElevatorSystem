@@ -47,7 +47,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func addToRequestQueueForLift(lift: Lift, request: FloorRequest) {
 
-        if lift.currentFloor == request.currentFloor {
+        if lift.currentFloor == request.currentFloor && lift.currentState == Direction.Stationary {
             openLiftOnSameFloor(lift)
             return
         }
@@ -58,20 +58,32 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         appendFloorInTextView(lift, floor: request)
 
-        if MainController.openLifts.count == 0
-        {
-            lift.moveLiftForRequest(request, interruptCall: false)
+        
+        if lift.currentState == Direction.Stationary {
+            lift.moveLiftForRequest(request, interruptCall: false, openLiftRequest: false)
         }
         else
         {
+            
+
         for openLift in MainController.openLifts {
-            if (openLift as! Lift).number == lift.number {
-                return
+            
+            if (openLift as! Lift) == lift {
+                
+                if openLift.currentFloor == request.currentFloor {
+                    
+                lift.moveLiftForRequest(request, interruptCall: true, openLiftRequest: true)
+                }
+                else
+                {
+                    if request.openLiftRequest != nil {
+                    lift.moveLiftForRequest(request, interruptCall: true, openLiftRequest: false)
+                }
             }
+           }
+          }
          }
-            lift.moveLiftForRequest(request, interruptCall: true)
         }
-    }
     
     
     func openLiftOnSameFloor(lift: Lift) {
@@ -116,7 +128,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-   
     func movedOneFloor(lift: Lift, reachedRequest: Bool, request: FloorRequest) {
         
      //   dispatch_sync(dispatch_get_main_queue(), {
@@ -235,34 +246,43 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if requestFloor < lift.currentFloor {
                 
                 direction = Direction.GoingDown
-                moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
+                moveToNextInQueue(requestedFloor, lift: lift, direction: direction, openLiftRequest:false)
             
             } else if requestFloor > lift.currentFloor {
                 
                 direction = Direction.GoingUp
-                moveToNextInQueue(requestedFloor, lift: lift, direction: direction)
+                moveToNextInQueue(requestedFloor, lift: lift, direction: direction, openLiftRequest:false)
             
             } else {
                 
                 let alert = UIAlertView(title: ":/ :/", message: "Nothing will happen", delegate: self, cancelButtonTitle: "Ok")
+                
                 alert.show()
+                
                 return  
             }
         } else {
             
             let nextRequest : FloorRequest
             
-            if lift.upPressedButtons.count != 0 && lift.downPressedButtons.count != 0 {
+            if lift.upPressedButtons.count != 0 || lift.downPressedButtons.count != 0 {
             
             if lift.currentState == Direction.GoingUp {
                 nextRequest = lift.upPressedButtons.pop() as! FloorRequest
+                
+                if FloorRequest.upPressedOnAllFloors.count != 0 {
                 FloorRequest.upPressedOnAllFloors.pop()
+                }
+                
             } else {
                 nextRequest = lift.downPressedButtons.pop() as! FloorRequest
+                
+                if FloorRequest.downPressedOnAllFloors.count != 0 {
                 FloorRequest.downPressedOnAllFloors.pop()
+                }
             }
             
-            moveToNextInQueue(nextRequest.currentFloor, lift: lift, direction: nextRequest.direction!)
+            moveToNextInQueue(nextRequest.currentFloor, lift: lift, direction: nextRequest.direction!, openLiftRequest: true)
            }
         }
         
@@ -278,11 +298,11 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             MainController.openLifts.removeObject(lift)
             
-            moveToNextInQueue(nil, lift: lift, direction: Direction.Stationary)
+            moveToNextInQueue(nil, lift: lift, direction: Direction.Stationary, openLiftRequest: false)
         }
     }
     
-    func moveToNextInQueue(requestedFloor: Int?,lift : Lift, direction : Direction) {
+    func moveToNextInQueue(requestedFloor: Int?,lift : Lift, direction : Direction, openLiftRequest : Bool) {
         
         
         var liftCell : LiftCell
@@ -301,15 +321,21 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return
         }
         
-        MainController.openLifts.removeObject(lift)
+        
         
         if direction != Direction.Stationary {
             
             let request = FloorRequest(floor: requestedFloor!, direction: direction)
             
+            request.openLiftRequest = openLiftRequest
+            
             addToRequestQueueForLift(lift, request: request)
+            
+            if MainController.openLifts.count != 0
+            {
+                MainController.openLifts.removeObject(lift)
+            }
         }
-        
   }
 
     

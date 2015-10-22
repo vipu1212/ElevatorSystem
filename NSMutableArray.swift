@@ -31,20 +31,24 @@ extension NSMutableArray {
         if self.count != 0 {
             
             if self.firstObject is Int {
+                
                 array = self as AnyObject as! [(Int)]
                 
                 array.sort({($0 as! Int) < ($1 as! Int)})
                 
-                
             }
+                
             else if self.firstObject is FloorRequest {
+                
                 array = self as AnyObject as! [(FloorRequest)]
                 
                 array.sort({($0 as! FloorRequest).currentFloor < ($1 as! FloorRequest).currentFloor})
             }
         }
-        return NSMutableArray(array: array)
+        
+        var set = NSOrderedSet(array: array)
+        
+        return NSMutableArray(array: set.array)
+        
     }
-    
-
 }

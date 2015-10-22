@@ -95,10 +95,17 @@ class FloorCell: UITableViewCell {
                     break
                 }
             } else {
-                liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? LiftCell)!
+                
+                var visibleLifts = self.liftsCollectionView.visibleCells()
+                
+                for lift in visibleLifts {
+                    
+                var liftPosition = lift.tag - 1
+                    
+                liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: liftPosition, inSection: 0)) as? LiftCell)!
+                
                 liftCell.setClosedLiftImage()
-                liftCell = (self.liftsCollectionView.cellForItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0)) as? LiftCell)!
-                liftCell.setClosedLiftImage()
+                }
             }
         }
     }

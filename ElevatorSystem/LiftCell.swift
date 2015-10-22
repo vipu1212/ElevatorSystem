@@ -59,7 +59,7 @@ class LiftCell: UICollectionViewCell {
         } else {
             delegate?.closeLift(nil, liftNumber: self.tag)
         }
-        
+        setClosedLiftImage()
         floorInputTextField.text = ""
     }
     

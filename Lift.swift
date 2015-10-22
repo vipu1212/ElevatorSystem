@@ -38,6 +38,15 @@ class Lift : NSObject , DebugPrintable{
         }
     }
 
+    var isOpen : Bool {
+        for lift in MainController.openLifts {
+            if lift as! Lift == self
+            {
+                return true
+            }
+        }
+        return false
+    }
     
     init(LiftNumber number :  Int) {
         self.number = number
@@ -45,14 +54,30 @@ class Lift : NSObject , DebugPrintable{
     
     //MARK:- Main Flow Methods
     
-    func moveLiftForRequest(request : FloorRequest, interruptCall : Bool) {
+    func moveLiftForRequest(request : FloorRequest, interruptCall : Bool, openLiftRequest : Bool) {
         
         self.setLiftDirection(request)
         
-     //   dispatch_async(DISPATCH_QUEUE_PRIORITY_HIGH, {
+        var timer : NSTimer?
         
-         let timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
-    // })
+         timer  = NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+        
+        if interruptCall {
+            
+            timer!.invalidate()
+            timer = nil
+            
+            if openLiftRequest
+            {
+             timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+            }
+            else
+            {
+            request.openLiftRequest = false
+                timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+
+            }
+        }
     }
     
     
@@ -65,8 +90,6 @@ class Lift : NSObject , DebugPrintable{
         }
         
         let liftCurrentFloor = updatedCurrentFloor()
-        
-        let requestedFloor = (request.userInfo as! FloorRequest).currentFloor
         
         let requestArray : NSMutableArray
         
@@ -90,6 +113,7 @@ class Lift : NSObject , DebugPrintable{
             delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
             
             request.invalidate()
+            
         }
         else
         {
@@ -126,7 +150,7 @@ class Lift : NSObject , DebugPrintable{
         }
     }
     
-    func isBelow(floor :  FloorRequest) ->  Bool?{
+    func isBelow(floor :  FloorRequest) ->  Bool? {
         
         if (floor.currentFloor > self.currentFloor) {
             return true
@@ -150,6 +174,6 @@ class Lift : NSObject , DebugPrintable{
     }
     
     override var description : String{
-        return "\(currentFloor) --- \(number)"
+        return "Lift At Floor \(currentFloor) , Number :  \(number)"
     }
 }
