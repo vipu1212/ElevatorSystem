@@ -54,12 +54,12 @@ class LiftCell: UICollectionViewCell {
         floorInputTextField.resignFirstResponder()
         
         if floorInputTextField.text != "" {
-            
+            setClosedLiftImage()
             delegate?.closeLift(floorInputTextField.text.toInt(), liftNumber: self.tag)
         } else {
             delegate?.closeLift(nil, liftNumber: self.tag)
         }
-        setClosedLiftImage()
+        
         floorInputTextField.text = ""
     }
     

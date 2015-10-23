@@ -56,8 +56,8 @@ class Lift : NSObject , DebugPrintable{
     
     func moveLiftForRequest(request : FloorRequest, interruptCall : Bool, openLiftRequest : Bool) {
         
-        self.setLiftDirection(request)
-        
+        if self.setLiftDirection(request)
+        {
         var timer : NSTimer?
         
          timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
@@ -75,10 +75,10 @@ class Lift : NSObject , DebugPrintable{
             {
             request.openLiftRequest = false
                 timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
-
             }
+          }
         }
-    }
+      }
     
     
     func moveOneFloor(request : NSTimer) {
@@ -94,46 +94,67 @@ class Lift : NSObject , DebugPrintable{
         let requestArray : NSMutableArray
         
         if (request.userInfo as! FloorRequest).direction == Direction.GoingUp {
+            
             requestArray = upPressedButtons
+            
+             if requestArray.count > 0 {
+                if (requestArray.firstObject as! FloorRequest).currentFloor == liftCurrentFloor
+                {
+                    delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
+                    
+                     request.invalidate()
+                }
+                else
+                {
+                    delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
+                }
+
+            }
         }
+            
+            
         else if (request.userInfo as! FloorRequest).direction == Direction.GoingDown
         {
             requestArray = downPressedButtons
+            
+            if requestArray.count > 0 {
+                
+                if (requestArray.lastObject as! FloorRequest).currentFloor == liftCurrentFloor
+                {
+                    delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
+                    
+                    request.invalidate()
+                }
+                else
+                {
+                    delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
+                }
+                
+            }
+
         }
         else {
             requestArray = downPressedButtons
             println("*****ERROR IN MOVE ONE FLOOR()*****")
         }
-        
-        if requestArray.count != 0 {
-        
-        if (requestArray.firstObject as! FloorRequest).currentFloor == liftCurrentFloor
-        {
-            
-            delegate!.movedOneFloor(self, reachedRequest: true, request: request.userInfo! as! FloorRequest)
-            
-            request.invalidate()
-            
-        }
-        else
-        {
-            delegate!.movedOneFloor(self, reachedRequest: false, request: request.userInfo! as! FloorRequest)
-        }
-        }
     }
     
     //MARK:-
     
-    func setLiftDirection(request : FloorRequest) {
+    func setLiftDirection(request : FloorRequest) -> Bool{
         
         if let liftIsBelow = self.isBelow(request) {
             if liftIsBelow {
                 self.currentState = Direction.GoingUp
+                return true
             } else {
                 self.currentState = Direction.GoingDown
+                return true
             }
         } else {
-            println("Unhandled condition !!! ")
+            self.currentState = Direction.Stationary
+            println("In Equal Condition. Lift at same floor, lifts open")
+            return false
         }
         
     }

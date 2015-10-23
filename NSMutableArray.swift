@@ -10,10 +10,27 @@ import Foundation
 
 extension NSMutableArray {
     
-    func pop() -> AnyObject {    // First In First Out
-       let last: AnyObject = self.lastObject!
-       self.removeObjectAtIndex(0)
-       return last
+    func pop(isUpRequestArray : Bool) -> AnyObject {    // First In First Out
+        
+       if isUpRequestArray
+       {
+        
+        let first: AnyObject = self.firstObject!
+        
+        self.removeObjectAtIndex(0)
+        
+        return first
+      
+       }
+       else
+       {
+        
+        let last: AnyObject = self.lastObject!
+        
+        self.removeLastObject()
+        
+        return last
+        }
     }
     
     func displayFloor() -> String {
