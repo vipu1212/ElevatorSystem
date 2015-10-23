@@ -57,22 +57,27 @@ class FloorCell: UITableViewCell {
     
     func checkAlreadyPressedButtons(floor : Int) {
         
+        btnUp.backgroundColor = UIColor.yellowColor()
+        btnDown.backgroundColor = UIColor.yellowColor()
+        
         for button in FloorRequest.upPressedOnAllFloors {
             if button as! Int == floor {
                 btnUp.backgroundColor = UIColor.greenColor()
                 break
-            } else {
-                btnUp.backgroundColor = UIColor.yellowColor()
             }
+//            } else {
+//                btnUp.backgroundColor = UIColor.yellowColor()
+//            }
         }
         
         for button in FloorRequest.downPressedOnAllFloors {
             if (button as! Int) == floor {
                 btnDown.backgroundColor = UIColor.greenColor()
                 break
-            } else {
-                btnDown.backgroundColor = UIColor.yellowColor()
             }
+//            else {
+//                btnDown.backgroundColor = UIColor.yellowColor()
+//            }
         }
     }
     

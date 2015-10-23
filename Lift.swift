@@ -60,7 +60,7 @@ class Lift : NSObject , DebugPrintable{
         
         var timer : NSTimer?
         
-         timer  = NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
+         timer  = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "moveOneFloor:", userInfo: request, repeats: true)
         
         if interruptCall {
             
