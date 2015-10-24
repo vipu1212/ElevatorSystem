@@ -24,6 +24,7 @@ class FloorCell: UITableViewCell {
     
     var delegate : LiftButtonProtocol?
     
+    // Fill data for the floor
     func fillCellData(var floor : Int) {
         
         floor = 10 - floor
@@ -54,7 +55,7 @@ class FloorCell: UITableViewCell {
         
     }
     
-    
+    // set button colors
     func checkAlreadyPressedButtons(floor : Int) {
         
         btnUp.backgroundColor = UIColor.yellowColor()
@@ -65,22 +66,24 @@ class FloorCell: UITableViewCell {
                 btnUp.backgroundColor = UIColor.greenColor()
                 break
             }
-//            } else {
-//                btnUp.backgroundColor = UIColor.yellowColor()
-//            }
+            else {
+                btnUp.backgroundColor = UIColor.yellowColor()
+            }
         }
         
         for button in FloorRequest.downPressedOnAllFloors {
+            
             if (button as! Int) == floor {
                 btnDown.backgroundColor = UIColor.greenColor()
                 break
             }
-//            else {
-//                btnDown.backgroundColor = UIColor.yellowColor()
-//            }
+            else {
+                btnDown.backgroundColor = UIColor.yellowColor()
+            }
         }
     }
     
+    // Set lift image
     func checkOpenLifts(floor : Int) {
         
         for openLift in MainController.openLifts {
@@ -125,9 +128,7 @@ class FloorCell: UITableViewCell {
             {
                 (sender as UIButton).backgroundColor = UIColor.greenColor()
             }
-            
-            
-            
+        
         
             
         let request = FloorRequest()
@@ -142,6 +143,7 @@ class FloorCell: UITableViewCell {
         }
     }
     
+    // Change button color
     func toggleButtonColor(direction : Direction) {
         
         if direction == Direction.GoingUp {

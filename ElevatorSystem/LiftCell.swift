@@ -26,7 +26,7 @@ class LiftCell: UICollectionViewCell {
     
     var delegate : LiftFloorSelectProtocol?
     
-
+        
     func setOpenLiftImage() {
         
         liftImage.image = UIImage(named: "openlift")
@@ -52,15 +52,29 @@ class LiftCell: UICollectionViewCell {
     @IBAction func onCancel(sender: AnyObject) {
         
         floorInputTextField.resignFirstResponder()
+        let inputFloor = floorInputTextField.text.toInt()
+       
+        // Input validation check
+        if inputFloor >= 0 && inputFloor < 11 {
         
-        if floorInputTextField.text != "" {
             setClosedLiftImage()
             delegate?.closeLift(floorInputTextField.text.toInt(), liftNumber: self.tag)
-        } else {
+        
+        }
+            else if floorInputTextField.text == "" {
+    
             delegate?.closeLift(nil, liftNumber: self.tag)
         }
+
+    
+        else
+        {
+            let alert = UIAlertView(title: "Input Warning", message: "Enter between 0 and 10 only", delegate: self, cancelButtonTitle: "Yeah Sure !")
+            
+            alert.show()
+        }
         
-        floorInputTextField.text = ""
+         floorInputTextField.text = ""
     }
     
 }

@@ -60,9 +60,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         else
         {
-        
-        
-        
 
         for openLift in MainController.openLifts {
             
@@ -86,6 +83,8 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    
+    // Beofre moving in other direction ,check if any request pending on same direction
     func pendingRequests(lift: Lift, var request: FloorRequest) -> FloorRequest{
         
         if request.direction != lift.currentState {
@@ -108,6 +107,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return request
     }
     
+    // If lift already present on same floor, open it
     func openLiftOnSameFloor(lift: Lift) {
     
         let liftCell : LiftCell
@@ -128,8 +128,8 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         liftCell.setOpenLiftImage()
     }
     
-    //MARK:- 
     
+    // Add Request in the request Queue for the lift
     func addRequestInArray(lift: Lift, request: FloorRequest) {
         
         if request.direction == Direction.GoingUp {
@@ -138,9 +138,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             lift.upPressedButtons = lift.upPressedButtons.sortAscendingOnFloorBasis()
             
-            FloorRequest.upPressedOnAllFloors.addObject(request.currentFloor!)
-            
-            FloorRequest.upPressedOnAllFloors = FloorRequest.upPressedOnAllFloors.sortAscendingOnFloorBasis()
             
         } else {
             
@@ -156,7 +153,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-    
+    // Called when lift moves one floor in either up/down direction
     func movedOneFloor(lift: Lift, reachedRequest: Bool, request: FloorRequest) {
         
      //   dispatch_sync(dispatch_get_main_queue(), {
@@ -197,7 +194,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-    
+    // Display current lift floor on label
     func updatedCurrentLiftLabel(lift: Lift) {
     
         if lift == FloorRequest.firstLift {
@@ -212,7 +209,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
  
-    
+    // Display open lift image
     func updateLiftImage(lift: Lift, request: FloorRequest) {
   
         MainController.openLifts.addObject(lift)
@@ -245,6 +242,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
+    // CLose lift image
     func closeLift(requestedFloor: Int?, liftNumber: Int) {
         
         var lift : Lift
@@ -257,8 +255,6 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         {
             lift = FloorRequest.secondLift!
         }
-        
-        
         
         if let requestFloor = requestedFloor {
             
@@ -280,23 +276,21 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 
                 alert.show()
                 
-                return
+                
             }
         } else {
             
             let nextRequest : FloorRequest?
             
-            
-            
-                if lift.upPressedButtons.count != 0 {
-                    nextRequest = lift.upPressedButtons.pop(true) as? FloorRequest
+               if lift.upPressedButtons.count > 0 {
+                       nextRequest = lift.upPressedButtons.pop(true) as? FloorRequest
                     
                     if FloorRequest.upPressedOnAllFloors.count != 0 {
                         FloorRequest.upPressedOnAllFloors.pop(true)
                     }
                 }
                     
-               else if lift.downPressedButtons.count != 0
+               else if lift.downPressedButtons.count > 0
                 {
                     
                 nextRequest = lift.downPressedButtons.pop(false) as? FloorRequest
@@ -306,7 +300,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
                 } else {
                     nextRequest = nil
-                    println("NIL AT CLOSE LIFT()")
+                    checkAndSetLiftStationary(lift)
             }
             
             if let request = nextRequest {
@@ -315,17 +309,17 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
                {
                 moveToNextInQueue(nextRequest!.currentFloor, lift: lift, direction: nextRequest!.direction!, openLiftRequest: true)
             }
+        }
             else
             {
-                checkAndSetLiftStationary(lift)
+                moveToNextInQueue(nil, lift: lift, direction: Direction.Stationary, openLiftRequest: true)
             }
-        }
         
         checkAndSetLiftStationary(lift)
         }
     }
     
-    
+    // Set lift Stationary if no more requests left
     func checkAndSetLiftStationary(lift : Lift) {
         
         if lift.upPressedButtons.count == 0 && lift.downPressedButtons.count == 0 && FloorRequest.upPressedOnAllFloors.count == 0 && FloorRequest.downPressedOnAllFloors.count == 0 {
@@ -338,7 +332,7 @@ class MainController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    
+    // GO for next request in queue
     func moveToNextInQueue(requestedFloor: Int?,lift : Lift, direction : Direction, openLiftRequest : Bool) {
         
         

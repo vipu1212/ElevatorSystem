@@ -35,6 +35,8 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         self.direction = direction
     }
     
+    //MARK:- FLoor protocol Method
+    
     func buttonPressed(ForFloor floor: Int, Direction btnDirection: String) {
         
         currentFloor = floor
@@ -42,19 +44,30 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         if btnDirection == "up"
         {
             direction = Direction.GoingUp  // Direction of the request
+            
+            FloorRequest.upPressedOnAllFloors.addObject(floor)
+            
+            FloorRequest.upPressedOnAllFloors = FloorRequest.upPressedOnAllFloors.sortAscendingOnFloorBasis()
+
         }
         else
         {
             direction = Direction.GoingDown
+            
+            FloorRequest.downPressedOnAllFloors.addObject(floor)
+            
+            FloorRequest.downPressedOnAllFloors = FloorRequest.upPressedOnAllFloors.sortAscendingOnFloorBasis()
+
         }
         
         prioritizeCall()
         
     }
+    //MARK:- Prioritizing methods
     
     func prioritizeCall () {
     
-        // Chexk any stationary Lift
+        // Check any stationary Lift
         anyLiftStationary()
         
         // Check nearest lift
@@ -70,6 +83,27 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
          addRequestInLift()   
         }
     }
+  
+    
+    
+    func addRequestInLift() {
+        
+        if leftPriority > rightPriority {
+            
+            delegate?.addToRequestQueueForLift(FloorRequest.firstLift!, request: self)
+        }
+        else if rightPriority > leftPriority {
+            
+            delegate?.addToRequestQueueForLift(FloorRequest.secondLift!, request: self)
+        }
+        else {
+            
+            randomLift()
+            
+            addRequestInLift()
+        }
+    }
+    
     
     func anyLiftStationary()  {
         
@@ -161,26 +195,7 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         }
     }
     
-    
-    func addRequestInLift() {
-                
-        if leftPriority > rightPriority {
-            
-            delegate?.addToRequestQueueForLift(FloorRequest.firstLift!, request: self)
-        }
-        else if rightPriority > leftPriority {
-            
-            delegate?.addToRequestQueueForLift(FloorRequest.secondLift!, request: self)
-        }
-            else {
-            
-            randomLift()
-            
-            addRequestInLift()
-        }
-    }
-    
-    
+    // Give priority to any random lift
     func randomLift() {
         
        let randomNumber = arc4random_uniform(127)
@@ -192,6 +207,7 @@ class FloorRequest : NSObject, LiftButtonProtocol , DebugPrintable {
         rightPriority += 1
      }
     
+    //MARK:-
     override var description : String{
         
         return "Request Floor \(currentFloor!) In direction :  \(direction!)"

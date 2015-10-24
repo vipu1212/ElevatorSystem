@@ -54,6 +54,7 @@ class Lift : NSObject , DebugPrintable{
     
     //MARK:- Main Flow Methods
     
+    // checks type of input reqeust and move
     func moveLiftForRequest(request : FloorRequest, interruptCall : Bool, openLiftRequest : Bool) {
         
         if self.setLiftDirection(request)
@@ -80,7 +81,7 @@ class Lift : NSObject , DebugPrintable{
         }
       }
     
-    
+    // Goes to next 1 floor
     func moveOneFloor(request : NSTimer) {
         
         if self.currentState == Direction.GoingUp {
@@ -159,7 +160,7 @@ class Lift : NSObject , DebugPrintable{
         
     }
 
-    
+    // Updates currentFLoor propert of lift
     func updatedCurrentFloor() -> Int{
         
         if self.currentState == Direction.GoingDown {
@@ -171,6 +172,7 @@ class Lift : NSObject , DebugPrintable{
         }
     }
     
+    // CHecks if lif is below request
     func isBelow(floor :  FloorRequest) ->  Bool? {
         
         if (floor.currentFloor > self.currentFloor) {
@@ -180,7 +182,8 @@ class Lift : NSObject , DebugPrintable{
         }
         return nil
     }
-    
+
+    // Check if lift with that ID  already exists
     func alreadyExistingID(newID : Int) -> Bool{
     
         if !(FloorRequest.totalLifts.count == 0) {

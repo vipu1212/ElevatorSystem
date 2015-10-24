@@ -10,6 +10,8 @@ import Foundation
 
 extension NSMutableArray {
     
+    
+    // Return the first or last element of the array based on the condition
     func pop(isUpRequestArray : Bool) -> AnyObject {    // First In First Out
         
        if isUpRequestArray
@@ -32,7 +34,8 @@ extension NSMutableArray {
         return last
         }
     }
-    
+
+    // User readable text to show on app
     func displayFloor() -> String {
         var floorsString = String()
         for floor in self {
@@ -41,6 +44,7 @@ extension NSMutableArray {
         return floorsString
     }
     
+    // Sort given array and also make only unique entries
     func sortAscendingOnFloorBasis() -> NSMutableArray {
         
         var array = [AnyObject]()
